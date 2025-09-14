@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-content {
+      position: relative;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      background: url("background.jpg") no-repeat center center/cover;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 1;
+    }
+
+    .login-box {
+      position: relative;
+      z-index: 2;
+      padding: 35px 25px;
+      color: white;
+    }
+
+    .login-header {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .lock-icon {
+      font-size: 40px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .login-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      backdrop-filter: blur(6px);
+      transition: background 0.3s;
+    }
+
+    .input-group input::placeholder {
+      color: #eee;
+    }
+
+    .input-group input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      outline: 2px solid #ffffff55;
+    }
+
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember-me input {
+      margin-right: 6px;
+    }
+
+    .forgot-password {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    /* Common button style */
+    .button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    /* Login button */
+    .login-button {
+      background-color: #ff7f50;
+      color: white;
+      border: none;
+    }
+
+    .login-button:hover {
+      background-color: #ff6333;
+    }
+
+    .login-button:disabled {
+      background-color: #ffb199;
+      cursor: not-allowed;
+    }
+
+    /* Google button */
+    .social-btn {
+      background-color: rgba(255,255,255,0.9);
+      color: #333;
+      border: none;
+    }
+
+    .social-btn:hover {
+      background-color: #f0f0f0;
+    }
+
+    .social-btn img {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+      color: #ddd;
+      font-size: 13px;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #aaa;
+    }
+
+    .separator:not(:empty)::before {
+      margin-right: 10px;
+    }
+
+    .separator:not(:empty)::after {
+      margin-left: 10px;
+    }
+
+    .signup-link {
+      font-size: 13px;
+      text-align: center;
+      margin-top: 5px;
+      color: #eee;
+    }
+
+    .signup-link a {
+      color: #ff7f50;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-content">
+      <div class="overlay"></div>
+      <div class="login-box">
+        <div class="login-header">
+          <span class="material-icons lock-icon">lock</span>
+          <h2>Login</h2>
+        </div>
+
+        <form action="#" method="POST">
+          <div class="input-group">
+            <input type="email" id="email" name="email" placeholder="Email address" required>
+          </div>
+
+          <div class="input-group">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+          </div>
+
+          <div class="login-options">
+            <label class="remember-me">
+              <input type="checkbox" name="remember-me">
+              Remember me
+            </label>
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="button login-button">Login</button>
+        </form>
+
+        <div class="separator">
+          <span>or</span>
+        </div>
+
+        <div class="social-login">
+          <button class="button social-btn">
+            <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google">
+            Continue with Google
+          </button>
+        </div>
+
+        <div class="signup-link">
+          Don't have an account? <a href="#">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (email && password) {
+        const loginButton = document.querySelector('.login-button');
+        loginButton.textContent = 'Logging in...';
+        loginButton.disabled = true;
+
+        setTimeout(() => {
+          alert('Login successful! (This is a demo)');
+          loginButton.textContent = 'Login';
+          loginButton.disabled = false;
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+</html>
