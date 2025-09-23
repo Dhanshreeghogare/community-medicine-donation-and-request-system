@@ -8,7 +8,6 @@
   body {
     margin: 0;
     font-family: Arial, sans-serif;
-    scroll-behavior: smooth;
   }
 
   /* Navbar */
@@ -19,11 +18,8 @@
     padding: 15px 50px;
     background: #fff;
     border-bottom: 1px solid #ddd;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+    position: relative;
+    z-index: 3;
   }
 
   .logo {
@@ -41,7 +37,11 @@
     margin: 0;
   }
 
-  .menu li a {
+  .menu li {
+    display: inline;
+  }
+
+  .menu a {
     text-decoration: none;
     color: #333;
     font-weight: 500;
@@ -63,7 +63,7 @@
     flex-direction: column;
     cursor: pointer;
     gap: 5px;
-    z-index: 1100;
+    z-index: 4;
   }
 
   .hamburger div {
@@ -87,7 +87,7 @@
   .sidebar {
     position: fixed;
     top: 0;
-    right: -250px;
+    right: -250px; /* hidden by default */
     width: 250px;
     height: 100%;
     background: #fff;
@@ -96,7 +96,7 @@
     flex-direction: column;
     padding-top: 60px;
     transition: right 0.4s ease;
-    z-index: 1000;
+    z-index: 3;
   }
 
   .sidebar.show { right: 0; }
@@ -119,32 +119,40 @@
     border-radius: 3px;
   }
 
-  /* Sections */
-  section {
-    min-height: 100vh;
-    padding: 120px 50px 50px; /* padding top for navbar */
+  /* Hero Section */
+  .hero {
+    position: relative;
+    height: 85vh;
+    background: url("../assets/medicine.jpg") center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    color: #fff;
+    padding: 0 50px;
   }
 
-  #home {
-    background: url("../assets/medicine.jpg") center/cover no-repeat;
-    color: #fff;
-    position: relative;
-  }
-  #home::before {
+  .hero::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0,0,0,0.3);
     z-index: 1;
   }
-  #home .hero-content { position: relative; z-index: 2; }
 
-  #about { background: white }
-  #gallery { background: lightcoral; }
-  #contact { background: lightgoldenrodyellow; }
-  #blog { background: lightblue; }
+  .hero-content {
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+  }
 
-  /* Hero buttons */
+  .hero h1 { font-size: 50px; margin: 0; }
+  .hero h3 { font-size: 24px; margin-top: 10px; font-weight: normal; }
+  .hero p { margin: 20px 0; line-height: 1.6; }
+
   .btn {
     display: inline-block;
     padding: 12px 22px;
@@ -157,14 +165,18 @@
   .btn-primary { background: #f4511e; color: #fff; }
   .btn-outline { border: 2px solid #fff; color: #fff; background: transparent; }
 
-  /* About section */
-  .about-content h1 { font-size: 40px; margin-bottom: 20px; color: #f4511e; }
-  .about-content p { max-width: 800px; font-size: 18px; line-height: 1.7; }
-
   /* Responsive */
   @media (max-width: 768px) {
-    .menu { display: none; }
+    .menu { display: none; } /* hide desktop menu */
     .hamburger { display: flex; }
+  }
+
+  @media (max-width: 480px) {
+    .hero { height: 60vh; padding: 0 15px; }
+    .hero h1 { font-size: 28px; }
+    .hero h3 { font-size: 16px; }
+    .hero p { font-size: 14px; }
+    .btn { padding: 10px 18px; font-size: 14px; margin-bottom: 10px; }
   }
 </style>
 </head>
@@ -174,70 +186,31 @@
 <div class="navbar">
   <div class="logo">AarogyaMitra</div>
   <ul class="menu">
-    <li><a href="#home">Home</a></li>
-    <li><a href="#about">About us</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#blog">Blog</a></li>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About us</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Contact</a></li>
+    <li><a href="#">Blog</a></li>
     <li><button class="donate-btn">Donate Now</button></li>
   </ul>
   <div class="hamburger" onclick="toggleSidebar(this)">
-    <div></div><div></div><div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
 </div>
 
-<!-- Sidebar Menu -->
+<!-- Sidebar Menu for mobile -->
 <div class="sidebar" id="sidebarMenu">
-  <a href="#home">Home</a>
-  <a href="#about">About us</a>
-  <a href="#gallery">Gallery</a>
-  <a href="#contact">Contact</a>
-  <a href="#blog">Blog</a>
+  <a href="#">Home</a>
+  <a href="#">About us</a>
+  <a href="#">Gallery</a>
+  <a href="#">Contact</a>
+  <a href="#">Blog</a>
   <button class="donate-btn">Donate Now</button>
 </div>
 
-<!-- Sections -->
-<section id="home">
-  <div class="hero-content">
-    <h1>Donate</h1>
-    <h3>4 a better world</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus vestibulum mauris quis aliquam.</p>
-    <a href="#" class="btn btn-primary">Donate Now</a>
-    <a href="#" class="btn btn-outline">Read More</a>
-  </div>
-</section>
-
-<section id="about">
-  <div class="about-content">
-    <h1>About AarogyaMitra</h1>
-    <p>
-      AarogyaMitra is an initiative focused on promoting health, wellness, and community care. 
-      Our mission is to provide accessible resources, awareness programs, and support systems 
-      that improve the quality of life for individuals and communities.
-    </p>
-    <p>
-      We believe in a holistic approach to health that combines medical support, 
-      lifestyle awareness, and community-driven initiatives. 
-      By collaborating with healthcare professionals, volunteers, and social workers, 
-      we strive to make a positive difference in society.
-    </p>
-  </div>
-</section>
-
-<section id="gallery">
-  <h1>Gallery</h1>
-  <p>Our project images will go here.</p>
-</section>
-
-<section id="contact">
-  <h1>Contact</h1>
-  <p>Contact details and form.</p>
-</section>
-
-<section id="blog">
-  <h1>Blog</h1>
-  <p>Latest updates and articles.</p>
-</section>
+<!-- Hero Section -->
 
 <script>
 function toggleSidebar(hamburger) {
