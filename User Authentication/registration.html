@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | AarogyaMitra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <style>
     * {
       margin: 0;
@@ -12,8 +14,9 @@
       font-family: 'Poppins', sans-serif;
     }
 
+    /* 🌅 Matching gradient background to complement login page */
     body {
-      background: #f0f2f5;
+      background: linear-gradient(135deg, #ffecd2 0%, #ff7f50 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -32,7 +35,7 @@
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      background: url("../assets/background.jpg") no-repeat center center/cover; /* use .jpg */
+      background: url("../assets/background.jpg") no-repeat center center/cover;
     }
 
     .overlay {
@@ -137,8 +140,26 @@
     .google-btn:hover {
       background: #f0f0f0;
     }
+
+    .login-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #eee;
+    }
+
+    .login-link a {
+      color: #ffd580;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
+
 <body>
   <div class="register-container">
     <div class="register-content">
@@ -147,7 +168,8 @@
         <div class="register-header">
           <h2>Create Account</h2>
         </div>
-        <form>
+
+        <form id="registerForm">
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" id="name" placeholder="Enter your name" required>
@@ -175,8 +197,30 @@
             Continue with Google
           </button>
         </form>
+
+        <!-- ✅ Added back link to login -->
+        <div class="login-link">
+          Already have an account? <a href="login.html">Login</a>
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+
+      if (password !== confirm) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      alert('Registration successful! (Demo only)');
+      window.location.href = 'login.html'; // Redirect to login after registration
+    });
+  </script>
 </body>
 </html>

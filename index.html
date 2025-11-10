@@ -4,11 +4,32 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AarogyaMitra</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 <style>
+  /* Base Styles */
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: "Poppins", sans-serif;
     scroll-behavior: smooth;
+    background-color: #fafdfb;
+    color: #333;
+  }
+
+  /* Color Palette */
+  :root {
+    --primary: #7ac7a6; /* Mint green */
+    --accent: #f9a178;  /* Soft coral-peach */
+    --light: #fefefe;
+    --text-dark: #2e2e2e;
+    --shadow: rgba(0,0,0,0.1);
   }
 
   /* Navbar */
@@ -16,9 +37,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 50px;
-    background: #fff;
-    border-bottom: 1px solid #ddd;
+    padding: 12px 50px;
+    background: var(--light);
+    border-bottom: 1px solid #e3f0ea;
     position: fixed;
     top: 0;
     left: 0;
@@ -27,15 +48,27 @@
   }
 
   .logo {
-    font-size: 22px;
-    font-weight: bold;
-    color: #f4511e;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  /* Desktop menu */
+  .logo img {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+  }
+
+  .logo-text {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
   .menu {
     display: flex;
     list-style: none;
+    align-items: center;
     gap: 25px;
     padding: 0;
     margin: 0;
@@ -43,18 +76,33 @@
 
   .menu li a {
     text-decoration: none;
-    color: #333;
+    color: var(--text-dark);
     font-weight: 500;
+    transition: color 0.3s;
   }
 
-  .donate-btn {
-    background: #f4511e;
-    color: #fff;
+  .menu li a:hover {
+    color: var(--primary);
+  }
+
+  /* Buttons */
+  .btn-nav {
     border: none;
-    padding: 10px 18px;
+    padding: 10px 20px;
     cursor: pointer;
-    font-weight: bold;
-    border-radius: 3px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+  }
+
+  .login-btn {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-nav:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
   }
 
   /* Hamburger for mobile */
@@ -63,7 +111,6 @@
     flex-direction: column;
     cursor: pointer;
     gap: 5px;
-    z-index: 1100;
   }
 
   .hamburger div {
@@ -83,18 +130,18 @@
     transform: rotate(-45deg) translate(5px, -5px);
   }
 
-  /* Sidebar menu for mobile */
+  /* Sidebar */
   .sidebar {
     position: fixed;
     top: 0;
     right: -250px;
     width: 250px;
     height: 100%;
-    background: #fff;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+    background: #ffffff;
+    box-shadow: -2px 0 8px var(--shadow);
     display: flex;
     flex-direction: column;
-    padding-top: 60px;
+    padding-top: 70px;
     transition: right 0.4s ease;
     z-index: 1000;
   }
@@ -112,54 +159,87 @@
     cursor: pointer;
   }
 
-  .sidebar button.donate-btn {
-    margin-top: 10px;
-    background: #f4511e;
-    color: #fff;
-    border-radius: 3px;
+  .sidebar .login-btn {
+    margin: 10px 20px;
+    border-radius: 25px;
   }
 
   /* Sections */
   section {
     min-height: 100vh;
-    padding: 120px 50px 50px; /* padding top for navbar */
+    padding: 120px 50px 50px;
   }
 
+  /* Hero */
   #home {
-    background: url("../assets/medicine.jpg") center/cover no-repeat;
+    background: url("assets/medicine.jpg") center/cover no-repeat;
     color: #fff;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
   }
+
   #home::before {
     content: "";
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.45);
     z-index: 1;
   }
-  #home .hero-content { position: relative; z-index: 2; }
 
-  #about { background: white }
-  #gallery { background: lightcoral; }
-  #contact { background: lightgoldenrodyellow; }
-  #blog { background: lightblue; }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+  }
 
-  /* Hero buttons */
+  .hero-content h1 {
+    font-size: 58px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #eaffea;
+  }
+
+  .hero-content h3 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .hero-content p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+
   .btn {
     display: inline-block;
-    padding: 12px 22px;
+    padding: 12px 25px;
     margin-right: 10px;
     border-radius: 25px;
     text-decoration: none;
     font-weight: bold;
   }
 
-  .btn-primary { background: #f4511e; color: #fff; }
+  .btn-primary { background: var(--primary); color: #fff; }
   .btn-outline { border: 2px solid #fff; color: #fff; background: transparent; }
 
-  /* About section */
-  .about-content h1 { font-size: 40px; margin-bottom: 20px; color: #f4511e; }
-  .about-content p { max-width: 800px; font-size: 18px; line-height: 1.7; }
+  .btn-outline:hover { background: #fff; color: var(--primary); }
+
+  /* About */
+  .about-content h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: var(--primary);
+  }
+
+  .about-content p {
+    max-width: 800px;
+    font-size: 18px;
+    line-height: 1.7;
+  }
 
   /* Responsive */
   @media (max-width: 768px) {
@@ -172,71 +252,49 @@
 
 <!-- Navbar -->
 <div class="navbar">
-  <div class="logo">AarogyaMitra</div>
+  <div class="logo">
+    <img src="assets/logo.png" alt="AarogyaMitra Logo">
+    <span class="logo-text">AarogyaMitra</span>
+  </div>
   <ul class="menu">
     <li><a href="#home">Home</a></li>
-    <li><a href="#about">About us</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#blog">Blog</a></li>
-    <li><button class="donate-btn">Donate Now</button></li>
+    <li><a href="User Authentication/login.html"><button class="btn-nav login-btn">Login</button></a></li>
   </ul>
   <div class="hamburger" onclick="toggleSidebar(this)">
     <div></div><div></div><div></div>
   </div>
 </div>
 
-<!-- Sidebar Menu -->
+<!-- Sidebar -->
 <div class="sidebar" id="sidebarMenu">
   <a href="#home">Home</a>
-  <a href="#about">About us</a>
+  <a href="#about">About</a>
   <a href="#gallery">Gallery</a>
   <a href="#contact">Contact</a>
   <a href="#blog">Blog</a>
-  <button class="donate-btn">Donate Now</button>
+  <a href="User Authentication/login.html"><button class="login-btn">Login</button></a>
 </div>
 
-<!-- Sections -->
+<!-- Hero Section -->
 <section id="home">
   <div class="hero-content">
-    <h1>Donate</h1>
-    <h3>4 a better world</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempus vestibulum mauris quis aliquam.</p>
-    <a href="#" class="btn btn-primary">Donate Now</a>
-    <a href="#" class="btn btn-outline">Read More</a>
+    <h1>Welcome to AarogyaMitra</h1>
+    <h3>Your Health Companion</h3>
+    <p>Join us in building a healthier and more informed community through care, awareness, and medical support.</p>
+    <a href="#about" class="btn btn-primary">Learn More</a>
   </div>
 </section>
 
+<!-- About -->
 <section id="about">
   <div class="about-content">
     <h1>About AarogyaMitra</h1>
-    <p>
-      AarogyaMitra is an initiative focused on promoting health, wellness, and community care. 
-      Our mission is to provide accessible resources, awareness programs, and support systems 
-      that improve the quality of life for individuals and communities.
-    </p>
-    <p>
-      We believe in a holistic approach to health that combines medical support, 
-      lifestyle awareness, and community-driven initiatives. 
-      By collaborating with healthcare professionals, volunteers, and social workers, 
-      we strive to make a positive difference in society.
-    </p>
+    <p>AarogyaMitra is a community health platform designed to promote wellness, awareness, and accessible healthcare for everyone. Our mission is to empower individuals to contribute to a healthier tomorrow through shared knowledge and support.</p>
   </div>
-</section>
-
-<section id="gallery">
-  <h1>Gallery</h1>
-  <p>Our project images will go here.</p>
-</section>
-
-<section id="contact">
-  <h1>Contact</h1>
-  <p>Contact details and form.</p>
-</section>
-
-<section id="blog">
-  <h1>Blog</h1>
-  <p>Latest updates and articles.</p>
 </section>
 
 <script>

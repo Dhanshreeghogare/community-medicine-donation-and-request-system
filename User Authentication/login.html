@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
+  <title>Login | AarogyaMitra</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
@@ -14,8 +15,9 @@
       font-family: 'Poppins', sans-serif;
     }
 
+    /* 🌅 Background now has a soft gradient that complements the site theme */
     body {
-      background: #f0f2f5;
+      background: linear-gradient(135deg, #ffecd2 0%, #ff7f50 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -124,7 +126,7 @@
       text-decoration: underline;
     }
 
-    /* Common button style */
+    /* Buttons */
     .button {
       width: 100%;
       padding: 12px;
@@ -139,7 +141,6 @@
       transition: background-color 0.3s;
     }
 
-    /* Login button */
     .login-button {
       background-color: #ff7f50;
       color: white;
@@ -155,7 +156,6 @@
       cursor: not-allowed;
     }
 
-    /* Google button */
     .social-btn {
       background-color: rgba(255,255,255,0.9);
       color: #333;
@@ -204,7 +204,7 @@
     }
 
     .signup-link a {
-      color: #ff7f50;
+      color: #ffd580;
       text-decoration: none;
       font-weight: 600;
     }
@@ -214,6 +214,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="login-container">
     <div class="login-content">
@@ -244,9 +245,7 @@
           <button type="submit" class="button login-button">Login</button>
         </form>
 
-        <div class="separator">
-          <span>or</span>
-        </div>
+        <div class="separator"><span>or</span></div>
 
         <div class="social-login">
           <button class="button social-btn">
@@ -255,9 +254,11 @@
           </button>
         </div>
 
+        <!-- ✅ Register link -->
         <div class="signup-link">
-          Don't have an account? <a href="#">Register</a>
+          Don’t have an account? <a href="registration.html">Register</a>
         </div>
+
       </div>
     </div>
   </div>
