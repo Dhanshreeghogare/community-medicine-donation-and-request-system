@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate Medicine | AarogyaMitra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+      --primary: #f57c00;
+      --light: #ffffff;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 50px;
+      background: var(--light);
+      border-bottom: 1px solid #e3f0ea;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo img { height: 40px; width: 40px; border-radius: 8px; }
+    .logo-text { font-size: 22px; font-weight: 600; color: var(--primary); }
+
+    .donate-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 50px 20px;
+      background: #f8f9fa;
+    }
+
+    .donate-form {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .donate-form h2 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #e65100;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">
+      <img src="/static/img/logo.png" alt="AarogyaMitra Logo">
+      <span class="logo-text">AarogyaMitra</span>
+    </div>
+    <div>
+      <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="donate-container">
+    <div class="donate-form">
+      <h2>Donate Medicine</h2>
+      <form id="donateForm">
+        <div class="form-group">
+          <label for="medicine_name">Medicine Name</label>
+          <input type="text" id="medicine_name" name="medicine_name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" name="quantity" min="1" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="expiry_date">Expiry Date</label>
+          <input type="date" id="expiry_date" name="expiry_date" required>
+        </div>
+        
+        <button type="submit" class="btn">Donate Medicine</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('donateForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const medicineName = document.getElementById('medicine_name').value;
+      const quantity = document.getElementById('quantity').value;
+      const expiryDate = document.getElementById('expiry_date').value;
+      
+      if (medicineName && quantity && expiryDate) {
+        alert(`Thank you for donating ${medicineName}! Your donation will help someone in need.`);
+        this.reset();
+        
+        // Redirect back to dashboard after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 2000);
+      }
+    });
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('expiry_date').min = today;
+  </script>
+</body>
+</html>

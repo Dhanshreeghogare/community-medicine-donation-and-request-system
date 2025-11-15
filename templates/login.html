@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | AarogyaMitra</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffecd2 0%, #ff7f50 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-content {
+      position: relative;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      background: url("/static/img/medicine.jpg") no-repeat center center/cover;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 1;
+    }
+
+    .login-box {
+      position: relative;
+      z-index: 2;
+      padding: 35px 25px;
+      color: white;
+    }
+
+    .login-header {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .lock-icon {
+      font-size: 40px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .login-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s;
+    }
+
+    .input-group input::placeholder {
+      color: #eee;
+    }
+
+    .input-group input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      outline: 2px solid #ffffff55;
+      transform: translateY(-2px);
+    }
+
+    .input-group input.error {
+      border: 2px solid #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    .error-message {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .remember-me input {
+      margin-right: 6px;
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      color: #ffd580;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .forgot-password:hover {
+      color: #ffb347;
+      text-decoration: underline;
+    }
+
+    .button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .login-button {
+      background-color: #ff7f50;
+      color: white;
+    }
+
+    .login-button:hover {
+      background-color: #ff6333;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 127, 80, 0.4);
+    }
+
+    .login-button:disabled {
+      background-color: #ffb199;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .social-btn {
+      background-color: rgba(255,255,255,0.9);
+      color: #333;
+      transition: all 0.3s;
+    }
+
+    .social-btn:hover {
+      background-color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .social-btn img {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+      color: #ddd;
+      font-size: 13px;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .separator:not(:empty)::before {
+      margin-right: 10px;
+    }
+
+    .separator:not(:empty)::after {
+      margin-left: 10px;
+    }
+
+    .signup-link {
+      font-size: 13px;
+      text-align: center;
+      margin-top: 5px;
+      color: #eee;
+    }
+
+    .signup-link a {
+      color: #ffd580;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .signup-link a:hover {
+      color: #ffb347;
+      text-decoration: underline;
+    }
+
+    /* Flash messages styling */
+    .flash-messages {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .flash {
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      animation: slideDown 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    .flash.success { 
+      background: rgba(212, 237, 218, 0.9); 
+      color: #155724; 
+      border: 1px solid #c3e6cb;
+    }
+    .flash.error { 
+      background: rgba(248, 215, 218, 0.9); 
+      color: #721c24; 
+      border: 1px solid #f5c6cb;
+    }
+    .flash.info { 
+      background: rgba(209, 236, 241, 0.9); 
+      color: #0c5460; 
+      border: 1px solid #bee5eb;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Back to home link */
+    .back-home {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .back-home a {
+      color: #ffd580;
+      text-decoration: none;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.3s;
+    }
+
+    .back-home a:hover {
+      color: #ffb347;
+      text-decoration: underline;
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .login-box {
+        padding: 25px 20px;
+      }
+      
+      .login-header h2 {
+        font-size: 20px;
+      }
+      
+      .lock-icon {
+        font-size: 35px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Flash Messages -->
+  <div class="flash-messages" id="flashMessages"></div>
+
+  <div class="login-container">
+    <div class="login-content">
+      <div class="overlay"></div>
+      <div class="login-box">
+        <div class="login-header">
+          <span class="material-icons lock-icon">lock</span>
+          <h2>Login</h2>
+        </div>
+
+        <form action="/login" method="POST" id="loginForm">
+          <div class="input-group">
+            <input type="text" id="username" name="username" placeholder="Username or Email" required>
+            <div class="error-message" id="usernameError">Please enter your username or email</div>
+          </div>
+
+          <div class="input-group">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <div class="error-message" id="passwordError">Please enter your password</div>
+          </div>
+
+          <div class="login-options">
+            <label class="remember-me">
+              <input type="checkbox" name="remember-me">
+              Remember me
+            </label>
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="button login-button" id="loginButton">
+            Login
+          </button>
+        </form>
+
+        <div class="separator"><span>or</span></div>
+
+        <div class="social-login">
+          <button type="button" class="button social-btn" id="googleLogin">
+            <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google">
+            Continue with Google
+          </button>
+        </div>
+
+        <div class="signup-link">
+          Don't have an account? <a href="registration.html">Register</a>
+        </div>
+
+        <div class="back-home">
+          <a href="index.html">
+            <span class="material-icons" style="font-size: 16px;">home</span>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const flashMessages = document.getElementById('flashMessages');
+
+    function showError(inputId, message) {
+      const input = document.getElementById(inputId);
+      const errorElement = document.getElementById(inputId + 'Error');
+      
+      input.classList.add('error');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    function hideError(inputId) {
+      const input = document.getElementById(inputId);
+      const errorElement = document.getElementById(inputId + 'Error');
+      
+      input.classList.remove('error');
+      errorElement.style.display = 'none';
+    }
+
+    function validateForm() {
+      let isValid = true;
+
+      // Validate username/email
+      if (!usernameInput.value.trim()) {
+        showError('username', 'Please enter your username or email');
+        isValid = false;
+      } else {
+        hideError('username');
+      }
+
+      // Validate password
+      if (!passwordInput.value) {
+        showError('password', 'Please enter your password');
+        isValid = false;
+      } else {
+        hideError('password');
+      }
+
+      return isValid;
+    }
+
+    function showLoading() {
+      loginButton.innerHTML = '<div class="loading"></div>Logging in...';
+      loginButton.disabled = true;
+    }
+
+    function hideLoading() {
+      loginButton.innerHTML = 'Login';
+      loginButton.disabled = false;
+    }
+
+    function showFlashMessage(message, type) {
+      const flash = document.createElement('div');
+      flash.className = `flash ${type}`;
+      flash.textContent = message;
+      flashMessages.appendChild(flash);
+
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        flash.style.opacity = '0';
+        setTimeout(() => flash.remove(), 500);
+      }, 5000);
+    }
+
+    // Handle form submission
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!validateForm()) {
+        return;
+      }
+
+      showLoading();
+
+      // Simulate API call - replace with actual form submission
+      setTimeout(() => {
+        const formData = {
+          username: usernameInput.value,
+          password: passwordInput.value
+        };
+
+        // For demo purposes - simulate successful login
+        console.log('Login attempt:', formData);
+        
+        // Show success message
+        showFlashMessage('Login successful! Redirecting...', 'success');
+        
+        // Redirect to dashboard or home page after successful login
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+        
+      }, 1500);
+    });
+
+    // Real-time validation
+    usernameInput.addEventListener('input', () => {
+      if (usernameInput.value.trim()) hideError('username');
+    });
+
+    passwordInput.addEventListener('input', () => {
+      if (passwordInput.value) hideError('password');
+    });
+
+    // Google login button
+    document.getElementById('googleLogin').addEventListener('click', function() {
+      showFlashMessage('Google login feature coming soon!', 'info');
+    });
+
+    // Forgot password
+    document.querySelector('.forgot-password').addEventListener('click', function(e) {
+      e.preventDefault();
+      showFlashMessage('Password reset feature coming soon!', 'info');
+    });
+
+    // Check for URL parameters to show messages (for redirects from registration)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('registered') === 'true') {
+      showFlashMessage('Registration successful! Please login.', 'success');
+    }
+    
+    if (urlParams.get('error') === 'invalid_credentials') {
+      showFlashMessage('Invalid username or password. Please try again.', 'error');
+    }
+
+    // Auto-focus on username field
+    usernameInput.focus();
+  </script>
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AarogyaMitra</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background-color: #fafdfb;
+    color: #333;
+    scroll-behavior: smooth;
+  }
+
+  :root {
+    --primary: #f57c00;  /* orange color */
+    --accent: #f9a178;
+    --light: #ffffff;
+    --text-dark: #2e2e2e;
+    --shadow: rgba(0,0,0,0.1);
+  }
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 50px;
+    background: var(--light);
+    border-bottom: 1px solid #e3f0ea;
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 1000;
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo img { 
+    height: 40px; 
+    width: 40px;
+    border-radius: 8px;
+  }
+  .logo-text { font-size: 22px; font-weight: 600; color: var(--primary); }
+
+  .menu {
+    display: flex; list-style: none;
+    align-items: center; gap: 25px; padding: 0; margin: 0;
+  }
+
+  .menu li a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .menu li a:hover { color: var(--primary); }
+
+  .btn-nav {
+    border: none; padding: 10px 20px;
+    cursor: pointer; font-weight: 600;
+    border-radius: 25px; transition: all 0.3s ease;
+  }
+  .login-btn { background: var(--primary); color: #fff; }
+  .btn-nav:hover { opacity: 0.9; transform: scale(1.05); }
+
+  .hamburger {
+    display: none; flex-direction: column;
+    cursor: pointer; gap: 5px;
+  }
+
+  .hamburger div {
+    width: 25px; height: 3px; background-color: #333;
+    transition: all 0.3s;
+  }
+
+  .hamburger.active div:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  .hamburger.active div:nth-child(2) { opacity: 0; }
+  .hamburger.active div:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  .sidebar {
+    position: fixed; top: 0; right: -250px;
+    width: 250px; height: 100%;
+    background: #ffffff; box-shadow: -2px 0 8px var(--shadow);
+    display: flex; flex-direction: column;
+    padding-top: 70px; transition: right 0.4s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.show { right: 0; }
+  .sidebar a, .sidebar button {
+    padding: 15px 20px; text-decoration: none;
+    color: #333; font-weight: 500;
+    border: none; background: none;
+    text-align: left; cursor: pointer;
+  }
+  .sidebar .login-btn {
+    margin: 10px 20px; border-radius: 25px;
+  }
+
+  section {
+    min-height: 100vh;
+    padding: 120px 50px 50px;
+  }
+
+  #home {
+    background: url("/static/img/medicine.jpg") center/cover no-repeat;
+    color: #fff; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    text-align: left;
+  }
+
+  #home::before {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.45); z-index: 1;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 700px;
+  }
+
+  .hero-content h1 {
+    font-size: 58px; margin-bottom: 10px;
+    font-weight: 700; color: #fff3e0;
+  }
+  .hero-content h3 { font-size: 26px; margin-bottom: 20px; color: #fff; }
+  .hero-content p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+
+  .btn { display: inline-block; padding: 12px 25px; margin-right: 10px;
+    border-radius: 25px; text-decoration: none; font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: #e65100; transform: translateY(-2px); }
+  .btn-outline { border: 2px solid #fff; color: #fff; background: transparent; }
+  .btn-outline:hover { background: #fff; color: var(--primary); transform: translateY(-2px); }
+
+  .about-content h1 {
+    font-size: 40px; margin-bottom: 20px; color: var(--primary);
+  }
+  .about-content p {
+    max-width: 800px; font-size: 18px; line-height: 1.7;
+  }
+
+  /* Medicines Section Styles */
+  #medicines {
+    background-color: #f8f9fa;
+  }
+  
+  #medicines h1 {
+    color: var(--primary);
+    font-size: 38px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .medicines-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .medicines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+  }
+  
+  .medicine-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary);
+  }
+  
+  .medicine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  }
+  
+  .medicine-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+  }
+  
+  .medicine-details {
+    margin-bottom: 15px;
+  }
+  
+  .medicine-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .detail-label {
+    font-weight: 500;
+    color: #666;
+  }
+  
+  .detail-value {
+    font-weight: 500;
+    color: var(--text-dark);
+  }
+  
+  .expiry-soon {
+    color: #e74c3c;
+    font-weight: 600;
+  }
+  
+  .available {
+    color: #27ae60;
+    font-weight: 600;
+  }
+  
+  .limited {
+    color: #f39c12;
+    font-weight: 600;
+  }
+  
+  .donor-info {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .no-medicines {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    grid-column: 1 / -1;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  
+  .no-medicines p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .search-filter {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .search-box {
+    flex: 1;
+    min-width: 250px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .filter-select {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: "Poppins", sans-serif;
+    background: white;
+  }
+
+  #contact h1 {
+    color: var(--primary);
+    font-size: 38px;
+    margin-bottom: 30px;
+  }
+  
+  .contact-info {
+    max-width: 600px;
+    margin-top: 20px;
+  }
+  
+  .contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .contact-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+  }
+  
+  .contact-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    margin-right: 20px;
+  }
+  
+  .contact-details h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-dark);
+  }
+  
+  .contact-details p {
+    margin: 0;
+    color: #666;
+  }
+
+  @media (max-width: 768px) {
+    .navbar { padding: 12px 20px; }
+    .menu { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 120px 20px 20px; }
+    .hero-content h1 { font-size: 42px; }
+    .hero-content h3 { font-size: 22px; }
+    .medicines-grid {
+      grid-template-columns: 1fr;
+    }
+    .search-filter {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <div class="logo">
+    <img src="/static/img/logo.png" alt="AarogyaMitra Logo">
+    <span class="logo-text">AarogyaMitra</span>
+  </div>
+  <ul class="menu">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#medicines">Available Medicines</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="login.html"><button class="btn-nav login-btn">Login</button></a></li>
+    <li><a href="registration.html"><button class="btn-nav" style="background: transparent; border: 2px solid var(--primary); color: var(--primary);">Register</button></a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleSidebar(this)">
+    <div></div><div></div><div></div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebarMenu">
+  <a href="#home" onclick="closeSidebar()">Home</a>
+  <a href="#medicines" onclick="closeSidebar()">Available Medicines</a>
+  <a href="#about" onclick="closeSidebar()">About</a>
+  <a href="#contact" onclick="closeSidebar()">Contact</a>
+  <a href="login.html"><button class="login-btn">Login</button></a>
+  <a href="registration.html" style="margin: 10px 20px;"><button class="btn-nav" style="background: transparent; border: 2px solid var(--primary); color: var(--primary); width: 100%;">Register</button></a>
+</div>
+
+<!-- Hero -->
+<section id="home">
+  <div class="hero-content">
+    <h1>Welcome to AarogyaMitra</h1>
+    <h3>Your Health Companion</h3>
+    <p>Join us in building a healthier and more informed community through care, awareness, and medical support. Connect donors with those in need of medicines and create a positive impact on community health.</p>
+    <a href="#medicines" class="btn btn-primary">View Available Medicines</a>
+    <a href="registration.html" class="btn btn-outline">Join Now</a>
+  </div>
+</section>
+
+<!-- Available Medicines Section -->
+<section id="medicines">
+  <div class="medicines-container">
+    <h1>Available Medicines</h1>
+    <p style="text-align: center; max-width: 800px; margin: 0 auto 30px; font-size: 18px; color: #666;">
+      Browse through medicines donated by our community members. These medicines are available for those in need.
+    </p>
+    
+    <div class="search-filter">
+      <input type="text" id="searchMedicine" class="search-box" placeholder="Search medicines by name...">
+      <select id="filterCategory" class="filter-select">
+        <option value="">All Categories</option>
+        <option value="Tablet">Tablets</option>
+        <option value="Capsule">Capsules</option>
+        <option value="Syrup">Syrups</option>
+        <option value="Injection">Injections</option>
+        <option value="Ointment">Ointments</option>
+      </select>
+      <select id="filterExpiry" class="filter-select">
+        <option value="">All Expiry Dates</option>
+        <option value="soon">Expiring Soon</option>
+        <option value="safe">Safe Expiry</option>
+      </select>
+    </div>
+    
+    <div class="medicines-grid" id="medicinesGrid">
+      <!-- Medicine cards will be dynamically inserted here -->
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="about-content">
+    <h1>About AarogyaMitra</h1>
+    <p>AarogyaMitra is a community health platform designed to promote wellness, awareness, and accessible healthcare for everyone. Our mission is to empower individuals to contribute to a healthier tomorrow through shared knowledge and support. We bridge the gap between medicine donors and recipients, ensuring that no medicine goes to waste and everyone gets the healthcare they deserve.</p>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <h1>Contact</h1>
+  <div class="contact-info">
+    <div class="contact-item">
+      <div class="contact-icon">
+        <i class="material-icons">email</i>
+      </div>
+      <div class="contact-details">
+        <h3>Email</h3>
+        <p>support@aarogyamitra.org</p>
+      </div>
+    </div>
+    
+    <div class="contact-item">
+      <div class="contact-icon">
+        <i class="material-icons">phone</i>
+      </div>
+      <div class="contact-details">
+        <h3>Phone</h3>
+        <p>+91 98765 43210</p>
+      </div>
+    </div>
+    
+    <div class="contact-item">
+      <div class="contact-icon">
+        <i class="material-icons">location_on</i>
+      </div>
+      <div class="contact-details">
+        <h3>Address</h3>
+        <p>123 Health Street, Medical District, Mumbai, India - 400001</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Empty medicine data - No medicines available
+const medicines = [];
+
+function toggleSidebar(hamburger) {
+  const sidebar = document.getElementById('sidebarMenu');
+  sidebar.classList.toggle('show');
+  hamburger.classList.toggle('active');
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebarMenu');
+  const hamburger = document.querySelector('.hamburger');
+  sidebar.classList.remove('show');
+  hamburger.classList.remove('active');
+}
+
+// Function to check if a medicine is expiring soon (within 3 months)
+function isExpiringSoon(expiryDate) {
+  const today = new Date();
+  const expiry = new Date(expiryDate);
+  const threeMonthsFromNow = new Date();
+  threeMonthsFromNow.setMonth(today.getMonth() + 3);
+  
+  return expiry <= threeMonthsFromNow;
+}
+
+// Function to format date
+function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Function to get quantity status
+function getQuantityStatus(quantity) {
+  if (quantity > 20) return { text: 'Available', class: 'available' };
+  if (quantity > 5) return { text: 'Limited Stock', class: 'limited' };
+  return { text: 'Low Stock', class: 'expiry-soon' };
+}
+
+// Function to render medicine cards
+function renderMedicines(medicinesToRender) {
+  const medicinesGrid = document.getElementById('medicinesGrid');
+  
+  if (medicinesToRender.length === 0) {
+    medicinesGrid.innerHTML = `
+      <div class="no-medicines">
+        <p style="font-size: 20px; color: #666; margin-bottom: 15px;">No medicines available at the moment</p>
+        <p style="color: #888; margin-bottom: 25px;">Be the first to donate medicines and help those in need.</p>
+        <a href="registration.html" class="btn btn-primary">Become a Donor</a>
+      </div>
+    `;
+    return;
+  }
+  
+  medicinesGrid.innerHTML = medicinesToRender.map(medicine => {
+    const quantityStatus = getQuantityStatus(medicine.quantity);
+    const expiringSoon = isExpiringSoon(medicine.expiryDate);
+    
+    return `
+      <div class="medicine-card">
+        <div class="medicine-name">${medicine.name}</div>
+        <div class="medicine-details">
+          <div class="medicine-detail">
+            <span class="detail-label">Category:</span>
+            <span class="detail-value">${medicine.category}</span>
+          </div>
+          <div class="medicine-detail">
+            <span class="detail-label">Quantity:</span>
+            <span class="detail-value ${quantityStatus.class}">${medicine.quantity} units</span>
+          </div>
+          <div class="medicine-detail">
+            <span class="detail-label">Expiry:</span>
+            <span class="detail-value ${expiringSoon ? 'expiry-soon' : ''}">
+              ${formatDate(medicine.expiryDate)} ${expiringSoon ? '(Expiring Soon)' : ''}
+            </span>
+          </div>
+        </div>
+        <div class="donor-info">
+          <strong>Donated by:</strong> ${medicine.donor}<br>
+          <strong>Location:</strong> ${medicine.location}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Function to filter medicines
+function filterMedicines() {
+  const searchTerm = document.getElementById('searchMedicine').value.toLowerCase();
+  const categoryFilter = document.getElementById('filterCategory').value;
+  const expiryFilter = document.getElementById('filterExpiry').value;
+  
+  const filteredMedicines = medicines.filter(medicine => {
+    // Search filter
+    const matchesSearch = medicine.name.toLowerCase().includes(searchTerm);
+    
+    // Category filter
+    const matchesCategory = !categoryFilter || medicine.category === categoryFilter;
+    
+    // Expiry filter
+    let matchesExpiry = true;
+    if (expiryFilter === 'soon') {
+      matchesExpiry = isExpiringSoon(medicine.expiryDate);
+    } else if (expiryFilter === 'safe') {
+      matchesExpiry = !isExpiringSoon(medicine.expiryDate);
+    }
+    
+    return matchesSearch && matchesCategory && matchesExpiry;
+  });
+  
+  renderMedicines(filteredMedicines);
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+  // Render initial medicines (none available)
+  renderMedicines(medicines);
+  
+  // Add event listeners for filters
+  document.getElementById('searchMedicine').addEventListener('input', filterMedicines);
+  document.getElementById('filterCategory').addEventListener('change', filterMedicines);
+  document.getElementById('filterExpiry').addEventListener('change', filterMedicines);
+  
+  // Smooth scrolling for navigation links
+  document.querySelectorAll('.menu a, .sidebar a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      if (this.getAttribute('href').startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 60,
+            behavior: 'smooth'
+          });
+        }
+        closeSidebar();
+      }
+    });
+  });
+
+  // Close sidebar when clicking outside
+  document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebarMenu');
+    const hamburger = document.querySelector('.hamburger');
+    
+    if (!sidebar.contains(event.target) && !hamburger.contains(event.target) && sidebar.classList.contains('show')) {
+      closeSidebar();
+    }
+  });
+
+  // Add some interactive features
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all sections
+  document.querySelectorAll('section').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(section);
+  });
+});
+</script>
+
+</body>
+</html>

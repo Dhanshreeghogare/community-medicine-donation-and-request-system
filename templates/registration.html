@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | AarogyaMitra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffecd2 0%, #ff7f50 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .register-content {
+      position: relative;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      background: url("/static/img/medicine.jpg") no-repeat center center/cover;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+
+    .register-box {
+      position: relative;
+      z-index: 2;
+      padding: 35px 25px;
+      color: white;
+    }
+
+    .register-header {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .person-icon {
+      font-size: 40px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .register-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+      color: #eee;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s;
+    }
+
+    .form-group input::placeholder {
+      color: #eee;
+    }
+
+    .form-group select {
+      color: #eee;
+      cursor: pointer;
+    }
+
+    .form-group select option {
+      background: #666;
+      color: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      background: rgba(255, 255, 255, 0.3);
+      outline: 2px solid #ffffff55;
+      transform: translateY(-2px);
+    }
+
+    .form-group input.error, .form-group select.error {
+      border: 2px solid #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #ff7f50;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 15px 0;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      background: #ff6333;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 127, 80, 0.4);
+    }
+
+    .btn:disabled {
+      background: #ffb199;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #eee;
+    }
+
+    .login-link a {
+      color: #ffd580;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .login-link a:hover {
+      color: #ffb347;
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* Flash messages */
+    .flash-messages {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .flash {
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      animation: slideDown 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    .flash.success { 
+      background: rgba(212, 237, 218, 0.9); 
+      color: #155724; 
+      border: 1px solid #c3e6cb;
+    }
+    .flash.error { 
+      background: rgba(248, 215, 218, 0.9); 
+      color: #721c24; 
+      border: 1px solid #f5c6cb;
+    }
+    .flash.info { 
+      background: rgba(209, 236, 241, 0.9); 
+      color: #0c5460; 
+      border: 1px solid #bee5eb;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Back to home link */
+    .back-home {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .back-home a {
+      color: #ffd580;
+      text-decoration: none;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.3s;
+    }
+
+    .back-home a:hover {
+      color: #ffb347;
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .register-box {
+        padding: 25px 20px;
+      }
+      
+      .register-header h2 {
+        font-size: 20px;
+      }
+      
+      .person-icon {
+        font-size: 35px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Flash Messages -->
+  <div class="flash-messages" id="flashMessages"></div>
+
+  <div class="register-container">
+    <div class="register-content">
+      <div class="overlay"></div>
+      <div class="register-box">
+        <div class="register-header">
+          <span class="material-icons person-icon">person_add</span>
+          <h2>Create Account</h2>
+        </div>
+
+        <form method="POST" id="registerForm">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+            <div class="error-message" id="usernameError">Username must be at least 3 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <div class="error-message" id="emailError">Please enter a valid email</div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+            <div class="error-message" id="passwordError">Password must be at least 6 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm">Confirm Password</label>
+            <input type="password" id="confirm" name="confirm" placeholder="Confirm password" required>
+            <div class="error-message" id="confirmError">Passwords do not match</div>
+          </div>
+
+          <div class="form-group">
+            <label for="user_type">I want to:</label>
+            <select id="user_type" name="user_type" required>
+              <option value="">Select option</option>
+              <option value="donor">Donate Medicine</option>
+              <option value="receiver">Receive Medicine</option>
+            </select>
+            <div class="error-message" id="userTypeError">Please select an option</div>
+          </div>
+
+          <button type="submit" class="btn" id="submitBtn">Register</button>
+        </form>
+
+        <div class="login-link">
+          Already have an account? <a href="login.html">Login here</a>
+        </div>
+
+        <div class="back-home">
+          <a href="index.html">
+            <span class="material-icons" style="font-size: 16px;">home</span>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm');
+    const userTypeSelect = document.getElementById('user_type');
+    const flashMessages = document.getElementById('flashMessages');
+
+    function showError(elementId, message) {
+      const input = document.getElementById(elementId.replace('Error', ''));
+      const errorElement = document.getElementById(elementId);
+      
+      input.classList.add('error');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+      const input = document.getElementById(elementId.replace('Error', ''));
+      const errorElement = document.getElementById(elementId);
+      
+      input.classList.remove('error');
+      errorElement.style.display = 'none';
+    }
+
+    function showFlashMessage(message, type) {
+      const flash = document.createElement('div');
+      flash.className = `flash ${type}`;
+      flash.textContent = message;
+      flashMessages.appendChild(flash);
+
+      setTimeout(() => {
+        flash.style.opacity = '0';
+        setTimeout(() => flash.remove(), 500);
+      }, 5000);
+    }
+
+    function showLoading() {
+      submitBtn.innerHTML = '<div class="loading"></div>Creating Account...';
+      submitBtn.disabled = true;
+    }
+
+    function hideLoading() {
+      submitBtn.innerHTML = 'Register';
+      submitBtn.disabled = false;
+    }
+
+    function validateForm() {
+      let isValid = true;
+
+      // Validate username
+      if (usernameInput.value.length < 3) {
+        showError('usernameError', 'Username must be at least 3 characters');
+        isValid = false;
+      } else {
+        hideError('usernameError');
+      }
+
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailInput.value)) {
+        showError('emailError', 'Please enter a valid email address');
+        isValid = false;
+      } else {
+        hideError('emailError');
+      }
+
+      // Validate password
+      if (passwordInput.value.length < 6) {
+        showError('passwordError', 'Password must be at least 6 characters');
+        isValid = false;
+      } else {
+        hideError('passwordError');
+      }
+
+      // Validate password confirmation
+      if (passwordInput.value !== confirmInput.value) {
+        showError('confirmError', 'Passwords do not match');
+        isValid = false;
+      } else {
+        hideError('confirmError');
+      }
+
+      // Validate user type
+      if (!userTypeSelect.value) {
+        showError('userTypeError', 'Please select whether you want to donate or receive medicine');
+        isValid = false;
+      } else {
+        hideError('userTypeError');
+      }
+
+      return isValid;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      if (!validateForm()) {
+        return;
+      }
+
+      showLoading();
+
+      // Simulate registration process
+      setTimeout(() => {
+        const formData = {
+          username: usernameInput.value,
+          email: emailInput.value,
+          password: passwordInput.value,
+          user_type: userTypeSelect.value
+        };
+
+        console.log('Registration data:', formData);
+        
+        // Show success message
+        showFlashMessage('Registration successful! Redirecting to login...', 'success');
+        
+        // Redirect to login page with success parameter
+        setTimeout(() => {
+          window.location.href = 'login.html?registered=true';
+        }, 2000);
+        
+      }, 1500);
+    });
+
+    // Real-time validation
+    usernameInput.addEventListener('input', () => {
+      if (usernameInput.value.length >= 3) hideError('usernameError');
+    });
+
+    emailInput.addEventListener('input', () => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailRegex.test(emailInput.value)) hideError('emailError');
+    });
+
+    passwordInput.addEventListener('input', () => {
+      if (passwordInput.value.length >= 6) hideError('passwordError');
+      if (passwordInput.value === confirmInput.value) hideError('confirmError');
+    });
+
+    confirmInput.addEventListener('input', () => {
+      if (passwordInput.value === confirmInput.value) hideError('confirmError');
+    });
+
+    userTypeSelect.addEventListener('change', () => {
+      if (userTypeSelect.value) hideError('userTypeError');
+    });
+
+    // Check for URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === 'username_taken') {
+      showFlashMessage('Username already taken. Please choose another one.', 'error');
+    }
+    
+    if (urlParams.get('error') === 'email_exists') {
+      showFlashMessage('Email already registered. Please use another email or login.', 'error');
+    }
+
+    // Auto-focus on username field
+    usernameInput.focus();
+  </script>
+</body>
+</html>
