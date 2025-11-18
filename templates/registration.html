@@ -38,6 +38,66 @@
       background: url("/static/img/medicine.jpg") no-repeat center center/cover;
     }
 
+    /* Fix Google button center + responsive */
+    .social-login {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .social-btn {
+      width: 90%;
+      max-width: 330px;
+      padding: 12px;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      gap: 10px;
+      background-color: rgba(255,255,255,0.9);
+      transition: all 0.3s;
+    }
+
+    .social-btn:hover {
+      background-color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .social-btn img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+      color: #ddd;
+      font-size: 13px;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .separator:not(:empty)::before {
+      margin-right: 10px;
+    }
+
+    .separator:not(:empty)::after {
+      margin-left: 10px;
+    }
+
     .overlay {
       position: absolute;
       top: 0;
@@ -177,7 +237,6 @@
       display: none;
     }
 
-    /* Flash messages */
     .flash-messages {
       position: fixed;
       top: 20px;
@@ -215,17 +274,10 @@
     }
 
     @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Loading animation */
     .loading {
       display: inline-block;
       width: 20px;
@@ -237,11 +289,8 @@
       margin-right: 10px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Back to home link */
     .back-home {
       text-align: center;
       margin-top: 15px;
@@ -262,20 +311,12 @@
       text-decoration: underline;
     }
 
-    /* Responsive */
     @media (max-width: 480px) {
-      .register-box {
-        padding: 25px 20px;
-      }
-      
-      .register-header h2 {
-        font-size: 20px;
-      }
-      
-      .person-icon {
-        font-size: 35px;
-      }
+      .register-box { padding: 25px 20px; }
+      .register-header h2 { font-size: 20px; }
+      .person-icon { font-size: 35px; }
     }
+
   </style>
 </head>
 
@@ -330,6 +371,16 @@
           <button type="submit" class="btn" id="submitBtn">Register</button>
         </form>
 
+        <div class="separator"><span>or</span></div>
+
+        <!-- ✔ Google button fully centered -->
+        <div class="social-login">
+          <button type="button" class="social-btn" id="googleLogin">
+            <img src="https://img.icons8.com/color/20/google-logo.png" alt="Google">
+            Continue with Google
+          </button>
+        </div>
+
         <div class="login-link">
           Already have an account? <a href="login.html">Login here</a>
         </div>
@@ -344,168 +395,125 @@
     </div>
   </div>
 
-  <script>
-    const form = document.getElementById('registerForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmInput = document.getElementById('confirm');
-    const userTypeSelect = document.getElementById('user_type');
-    const flashMessages = document.getElementById('flashMessages');
+<script>
+  const form = document.getElementById('registerForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const usernameInput = document.getElementById('username');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const confirmInput = document.getElementById('confirm');
+  const userTypeSelect = document.getElementById('user_type');
+  const flashMessages = document.getElementById('flashMessages');
 
-    function showError(elementId, message) {
-      const input = document.getElementById(elementId.replace('Error', ''));
-      const errorElement = document.getElementById(elementId);
-      
-      input.classList.add('error');
-      errorElement.textContent = message;
-      errorElement.style.display = 'block';
-    }
+  function showError(id, message) {
+    const input = document.getElementById(id.replace('Error', ''));
+    const errorMsg = document.getElementById(id);
+    input.classList.add('error');
+    errorMsg.textContent = message;
+    errorMsg.style.display = 'block';
+  }
 
-    function hideError(elementId) {
-      const input = document.getElementById(elementId.replace('Error', ''));
-      const errorElement = document.getElementById(elementId);
-      
-      input.classList.remove('error');
-      errorElement.style.display = 'none';
-    }
+  function hideError(id) {
+    const input = document.getElementById(id.replace('Error', ''));
+    const errorMsg = document.getElementById(id);
+    input.classList.remove('error');
+    errorMsg.style.display = 'none';
+  }
 
-    function showFlashMessage(message, type) {
-      const flash = document.createElement('div');
-      flash.className = `flash ${type}`;
-      flash.textContent = message;
-      flashMessages.appendChild(flash);
+  function showFlashMessage(message, type) {
+    const flash = document.createElement('div');
+    flash.className = `flash ${type}`;
+    flash.textContent = message;
+    flashMessages.appendChild(flash);
 
-      setTimeout(() => {
-        flash.style.opacity = '0';
-        setTimeout(() => flash.remove(), 500);
-      }, 5000);
-    }
+    setTimeout(() => {
+      flash.style.opacity = '0';
+      setTimeout(() => flash.remove(), 500);
+    }, 5000);
+  }
 
-    function showLoading() {
-      submitBtn.innerHTML = '<div class="loading"></div>Creating Account...';
-      submitBtn.disabled = true;
-    }
+  function showLoading() {
+    submitBtn.innerHTML = '<div class="loading"></div>Creating Account...';
+    submitBtn.disabled = true;
+  }
 
-    function hideLoading() {
-      submitBtn.innerHTML = 'Register';
-      submitBtn.disabled = false;
-    }
+  function hideLoading() {
+    submitBtn.innerHTML = 'Register';
+    submitBtn.disabled = false;
+  }
 
-    function validateForm() {
-      let isValid = true;
+  function validateForm() {
+    let valid = true;
 
-      // Validate username
-      if (usernameInput.value.length < 3) {
-        showError('usernameError', 'Username must be at least 3 characters');
-        isValid = false;
-      } else {
-        hideError('usernameError');
-      }
+    if (usernameInput.value.length < 3) {
+      showError('usernameError', 'Username must be at least 3 characters');
+      valid = false;
+    } else hideError('usernameError');
 
-      // Validate email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(emailInput.value)) {
-        showError('emailError', 'Please enter a valid email address');
-        isValid = false;
-      } else {
-        hideError('emailError');
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput.value)) {
+      showError('emailError', 'Enter a valid email');
+      valid = false;
+    } else hideError('emailError');
 
-      // Validate password
-      if (passwordInput.value.length < 6) {
-        showError('passwordError', 'Password must be at least 6 characters');
-        isValid = false;
-      } else {
-        hideError('passwordError');
-      }
+    if (passwordInput.value.length < 6) {
+      showError('passwordError', 'Password must be at least 6 characters');
+      valid = false;
+    } else hideError('passwordError');
 
-      // Validate password confirmation
-      if (passwordInput.value !== confirmInput.value) {
-        showError('confirmError', 'Passwords do not match');
-        isValid = false;
-      } else {
-        hideError('confirmError');
-      }
+    if (passwordInput.value !== confirmInput.value) {
+      showError('confirmError', 'Passwords do not match');
+      valid = false;
+    } else hideError('confirmError');
 
-      // Validate user type
-      if (!userTypeSelect.value) {
-        showError('userTypeError', 'Please select whether you want to donate or receive medicine');
-        isValid = false;
-      } else {
-        hideError('userTypeError');
-      }
+    if (!userTypeSelect.value) {
+      showError('userTypeError', 'Please select an option');
+      valid = false;
+    } else hideError('userTypeError');
 
-      return isValid;
-    }
+    return valid;
+  }
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      if (!validateForm()) {
-        return;
-      }
-
-      showLoading();
-
-      // Simulate registration process
-      setTimeout(() => {
-        const formData = {
-          username: usernameInput.value,
-          email: emailInput.value,
-          password: passwordInput.value,
-          user_type: userTypeSelect.value
-        };
-
-        console.log('Registration data:', formData);
-        
-        // Show success message
-        showFlashMessage('Registration successful! Redirecting to login...', 'success');
-        
-        // Redirect to login page with success parameter
-        setTimeout(() => {
-          window.location.href = 'login.html?registered=true';
-        }, 2000);
-        
-      }, 1500);
-    });
-
-    // Real-time validation
-    usernameInput.addEventListener('input', () => {
-      if (usernameInput.value.length >= 3) hideError('usernameError');
-    });
-
-    emailInput.addEventListener('input', () => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (emailRegex.test(emailInput.value)) hideError('emailError');
-    });
-
-    passwordInput.addEventListener('input', () => {
-      if (passwordInput.value.length >= 6) hideError('passwordError');
-      if (passwordInput.value === confirmInput.value) hideError('confirmError');
-    });
-
-    confirmInput.addEventListener('input', () => {
-      if (passwordInput.value === confirmInput.value) hideError('confirmError');
-    });
-
-    userTypeSelect.addEventListener('change', () => {
-      if (userTypeSelect.value) hideError('userTypeError');
-    });
-
-    // Check for URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('error') === 'username_taken') {
-      showFlashMessage('Username already taken. Please choose another one.', 'error');
-    }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
     
-    if (urlParams.get('error') === 'email_exists') {
-      showFlashMessage('Email already registered. Please use another email or login.', 'error');
-    }
+    if (!validateForm()) return;
 
-    // Auto-focus on username field
-    usernameInput.focus();
-  </script>
+    showLoading();
+
+    setTimeout(() => {
+      showFlashMessage('Registration successful! Redirecting...', 'success');
+
+      setTimeout(() => {
+        window.location.href = 'login.html?registered=true';
+      }, 2000);
+
+    }, 1500);
+  });
+
+  usernameInput.addEventListener('input', () => {
+    if (usernameInput.value.length >= 3) hideError('usernameError');
+  });
+
+  emailInput.addEventListener('input', () => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (regex.test(emailInput.value)) hideError('emailError');
+  });
+
+  passwordInput.addEventListener('input', () => {
+    if (passwordInput.value.length >= 6) hideError('passwordError');
+    if (passwordInput.value === confirmInput.value) hideError('confirmError');
+  });
+
+  confirmInput.addEventListener('input', () => {
+    if (passwordInput.value === confirmInput.value) hideError('confirmError');
+  });
+
+  userTypeSelect.addEventListener('change', () => {
+    if (userTypeSelect.value) hideError('userTypeError');
+  });
+
+</script>
+
 </body>
 </html>
