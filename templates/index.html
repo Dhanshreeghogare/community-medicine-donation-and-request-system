@@ -101,6 +101,65 @@
     transform: rotate(-45deg) translate(5px, -5px);
   }
 
+  /*navbar updated */
+  /* Profile Icon */
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+}
+
+/* Dropdown Container */
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  min-width: 180px;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+  z-index: 999;
+}
+
+/* Dropdown visible on hover */
+.profile-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Dropdown Links */
+.dropdown-menu a {
+  display: block;
+  padding: 10px 8px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f0f0f0;
+}
+
+/* Username display */
+.user-name {
+  font-weight: bold;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.logout-btn {
+  color: red !important;
+}
+
   .sidebar {
     position: fixed; top: 0; right: -250px;
     width: 250px; height: 100%;
@@ -693,7 +752,7 @@
 
 
 #faq h1 {
-  text-align:;
+  /* text-align:; */
   font-size: 32px;
   margin-bottom: 30px;
   color: #e65100;
@@ -768,21 +827,46 @@
     <img src="/static/img/logo.png" alt="AarogyaMitra Logo">
     <span class="logo-text">AarogyaMitra</span>
   </div>
+
   <ul class="menu">
     <li><a href="#home">Home</a></li>
-    
-<li><a href="#about">About</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#medicines">Available Medicines</a></li>
     <li><a href="#contact">Contact</a></li>
 
-    <!-- REGISTER BUTTON REMOVED -->
-    <li><a href="login.html"><button class="btn-nav login-btn">Login</button></a></li>
+    {% if session.get('user') %}
+
+      <!-- LOGOUT BUTTON REMOVED (GOES INSIDE DROPDOWN) -->
+
+      <!-- ⭐ Profile Dropdown -->
+      <li class="profile-dropdown">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+             alt="Profile"
+             class="profile-icon">
+
+        <div class="dropdown-menu">
+          <p class="user-name">{{ session['user']['username'] }}</p>
+          <a href="/donor/dashboard">My Profile</a>
+          <a href="#">Settings</a>
+          <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+      </li>
+
+    {% else %}
+      <li>
+        <a href="/login">
+          <button class="btn-nav login-btn">Login</button>
+        </a>
+      </li>
+    {% endif %}
   </ul>
 
   <div class="hamburger" onclick="toggleSidebar(this)">
     <div></div><div></div><div></div>
   </div>
 </div>
+
+
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebarMenu">
@@ -1179,6 +1263,54 @@ const tickerMessages = [
 ];
 
 document.querySelector('.slider-text').innerHTML = tickerMessages.join(" | ");
+
+async function loadMedicines() {
+    const response = await fetch("/medicines");
+    const data = await response.json();
+
+    const container = document.querySelector(".medicines-grid");
+
+    container.innerHTML = "";
+
+    if (data.length === 0) {
+      container.innerHTML = `
+        <div class="no-medicines">
+          <p>No medicines available right now.</p>
+        </div>`;
+      return;
+    }
+
+    data.forEach(medicine => {
+      container.innerHTML += `
+        <div class="medicine-card">
+          <div class="medicine-name">${medicine.name}</div>
+
+          <div class="medicine-details">
+            <div class="medicine-detail">
+              <span class="detail-label">Expiry:</span>
+              <span class="detail-value">${medicine.expiry}</span>
+            </div>
+
+            <div class="medicine-detail">
+              <span class="detail-label">Quantity:</span>
+              <span class="detail-value">${medicine.quantity}</span>
+            </div>
+
+            <div class="medicine-detail">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value">${medicine.status}</span>
+            </div>
+          </div>
+
+          <div class="donor-info">
+            Donor: ${medicine.donor}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", loadMedicines);
 
 </script>
 

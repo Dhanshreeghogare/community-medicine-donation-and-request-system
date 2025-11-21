@@ -333,7 +333,7 @@
           <h2>Create Account</h2>
         </div>
 
-        <form method="POST" id="registerForm">
+        <form id="registerForm">
           <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="Enter username" required>
@@ -394,126 +394,131 @@
       </div>
     </div>
   </div>
-
 <script>
-  const form = document.getElementById('registerForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const usernameInput = document.getElementById('username');
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
-  const confirmInput = document.getElementById('confirm');
-  const userTypeSelect = document.getElementById('user_type');
-  const flashMessages = document.getElementById('flashMessages');
+document.addEventListener("DOMContentLoaded", () => {
 
-  function showError(id, message) {
-    const input = document.getElementById(id.replace('Error', ''));
-    const errorMsg = document.getElementById(id);
-    input.classList.add('error');
-    errorMsg.textContent = message;
-    errorMsg.style.display = 'block';
-  }
+  // ✅ Define all required elements
+  const form = document.getElementById("registerForm");
+  const usernameInput = document.getElementById("username");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const confirmInput = document.getElementById("confirm");
+  const userTypeSelect = document.getElementById("user_type");
+  const submitBtn = document.getElementById("submitBtn");
 
-  function hideError(id) {
-    const input = document.getElementById(id.replace('Error', ''));
-    const errorMsg = document.getElementById(id);
-    input.classList.remove('error');
-    errorMsg.style.display = 'none';
-  }
-
-  function showFlashMessage(message, type) {
-    const flash = document.createElement('div');
-    flash.className = `flash ${type}`;
-    flash.textContent = message;
-    flashMessages.appendChild(flash);
-
-    setTimeout(() => {
-      flash.style.opacity = '0';
-      setTimeout(() => flash.remove(), 500);
-    }, 5000);
-  }
-
-  function showLoading() {
-    submitBtn.innerHTML = '<div class="loading"></div>Creating Account...';
-    submitBtn.disabled = true;
-  }
-
-  function hideLoading() {
-    submitBtn.innerHTML = 'Register';
-    submitBtn.disabled = false;
-  }
-
+  // Simple validation function
   function validateForm() {
     let valid = true;
 
     if (usernameInput.value.length < 3) {
-      showError('usernameError', 'Username must be at least 3 characters');
+      document.getElementById("usernameError").style.display = "block";
       valid = false;
-    } else hideError('usernameError');
+    } else {
+      document.getElementById("usernameError").style.display = "none";
+    }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailInput.value)) {
-      showError('emailError', 'Enter a valid email');
+    if (!emailInput.value.includes("@")) {
+      document.getElementById("emailError").style.display = "block";
       valid = false;
-    } else hideError('emailError');
+    } else {
+      document.getElementById("emailError").style.display = "none";
+    }
 
     if (passwordInput.value.length < 6) {
-      showError('passwordError', 'Password must be at least 6 characters');
+      document.getElementById("passwordError").style.display = "block";
       valid = false;
-    } else hideError('passwordError');
+    } else {
+      document.getElementById("passwordError").style.display = "none";
+    }
 
     if (passwordInput.value !== confirmInput.value) {
-      showError('confirmError', 'Passwords do not match');
+      document.getElementById("confirmError").style.display = "block";
       valid = false;
-    } else hideError('confirmError');
+    } else {
+      document.getElementById("confirmError").style.display = "none";
+    }
 
-    if (!userTypeSelect.value) {
-      showError('userTypeError', 'Please select an option');
+    if (userTypeSelect.value === "") {
+      document.getElementById("userTypeError").style.display = "block";
       valid = false;
-    } else hideError('userTypeError');
+    } else {
+      document.getElementById("userTypeError").style.display = "none";
+    }
 
     return valid;
   }
 
-  form.addEventListener('submit', (e) => {
+  // Loading animation
+  function showLoading() {
+    submitBtn.innerHTML = `<div class="loading"></div> Registering...`;
+    submitBtn.disabled = true;
+  }
+
+  function hideLoading() {
+    submitBtn.innerHTML = "Register";
+    submitBtn.disabled = false;
+  }
+
+  // Flash message
+  function showFlashMessage(message, type) {
+    const flashBox = document.getElementById("flashMessages");
+    const div = document.createElement("div");
+
+    div.className = `flash ${type}`;
+    div.innerHTML = message;
+
+    flashBox.appendChild(div);
+
+    setTimeout(() => div.remove(), 3000);
+  }
+
+  // MAIN SUBMIT FUNCTION
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     showLoading();
 
-    setTimeout(() => {
-      showFlashMessage('Registration successful! Redirecting...', 'success');
+    const userData = {
+      username: usernameInput.value,
+      email: emailInput.value,
+      password: passwordInput.value,
+      user_type: userTypeSelect.value
+    };
 
-      setTimeout(() => {
-        window.location.href = 'login.html?registered=true';
-      }, 2000);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userData)
+      });
 
-    }, 1500);
+      const result = await response.json();
+
+      hideLoading();
+
+      if (result.success) {
+        showFlashMessage(result.message, "success");
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 2000);
+      } else {
+        showFlashMessage(result.message, "error");
+      }
+
+    } catch (error) {
+      hideLoading();
+      showFlashMessage("Server error! Please try again later.", "error");
+      console.error(error);
+    }
   });
 
-  usernameInput.addEventListener('input', () => {
-    if (usernameInput.value.length >= 3) hideError('usernameError');
-  });
-
-  emailInput.addEventListener('input', () => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (regex.test(emailInput.value)) hideError('emailError');
-  });
-
-  passwordInput.addEventListener('input', () => {
-    if (passwordInput.value.length >= 6) hideError('passwordError');
-    if (passwordInput.value === confirmInput.value) hideError('confirmError');
-  });
-
-  confirmInput.addEventListener('input', () => {
-    if (passwordInput.value === confirmInput.value) hideError('confirmError');
-  });
-
-  userTypeSelect.addEventListener('change', () => {
-    if (userTypeSelect.value) hideError('userTypeError');
-  });
-
+});
 </script>
 
+ 
 </body>
 </html>

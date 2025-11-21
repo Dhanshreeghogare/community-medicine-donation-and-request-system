@@ -1,323 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Donor Dashboard | AarogyaMitra</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard | AarogyaMitra</title>
 
-    :root {
-      --primary: #ff8c00;
-      --primary-light: #fff3e0;
-      --secondary: #ff5722;
-      --accent: #ff9800;
-      --light: #ffffff;
-      --dark: #2e2e2e;
-      --gray: #666;
-      --light-gray: #f5f5f5;
-      --border: #e0e0e0;
-    }
+    <!-- IMPORT NAVBAR CSS -->
+    <!-- <link rel="stylesheet" href="/static/css/navbar.css"> -->
 
-    body {
-      background-color: #f8f9fa;
-      color: var(--dark);
-    }
+    <!-- INLINE DASHBOARD CSS ONLY -->
+    <style>
+        .dashboard-container {
+            width: 90%;
+            margin: auto;
+            padding-top: 120px; /* because navbar is fixed */
+        }
 
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 50px;
-      background: var(--light);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: fixed;
-      top: 0; 
-      left: 0; 
-      width: 100%;
-      z-index: 1000;
-    }
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-    .logo { 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
-    }
-    
-    .logo-img {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      border-radius: 5px;
-    }
-    
-    .logo-fallback {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 20px;
-    }
-    
-    .logo-text { 
-      font-size: 24px; 
-      font-weight: 700; 
-      color: var(--primary); 
-    }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
 
-    .menu {
-      display: flex; 
-      list-style: none;
-      align-items: center; 
-      gap: 30px; 
-    }
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #222;
+            text-align: center;
+            transition: 0.3s ease;
+        }
 
-    .menu li a {
-      text-decoration: none;
-      color: var(--dark);
-      font-weight: 500;
-      transition: color 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .menu li a:hover { 
-      color: var(--primary); 
-    }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
 
-    .btn-nav {
-      border: none; 
-      padding: 10px 20px;
-      cursor: pointer; 
-      font-weight: 600;
-      border-radius: 25px; 
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .login-btn { 
-      background: var(--primary); 
-      color: #fff; 
-    }
-    
-    .btn-nav:hover { 
-      opacity: 0.9; 
-      transform: scale(1.05); 
-    }
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
 
-    .dashboard-container {
-      padding-top: 80px;
-      min-height: 100vh;
-    }
+        .dashboard-card h3 {
+            margin: 10px 0 5px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
 
-    .dashboard-header {
-      background: linear-gradient(135deg, var(--primary) 0%, #e67e00 100%);
-      color: white;
-      padding: 40px 50px;
-      margin-bottom: 30px;
-    }
-
-    .welcome-message h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-type {
-      font-size: 18px;
-      opacity: 0.9;
-    }
-
-    .dashboard-content {
-      padding: 0 50px 50px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .dashboard-section {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-      margin-bottom: 30px;
-    }
-
-    .section-title {
-      color: var(--primary);
-      margin-bottom: 20px;
-      font-size: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .section-subtitle {
-      color: var(--gray);
-      font-size: 16px;
-      font-weight: 400;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: var(--gray);
-    }
-
-    .empty-state .material-icons {
-      font-size: 64px;
-      color: #ccc;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #e67e00;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
-    }
-
-    @media (max-width: 768px) {
-      .navbar { 
-        padding: 15px 20px; 
-      }
-      
-      .menu {
-        gap: 15px;
-      }
-      
-      .dashboard-header { 
-        padding: 30px 20px; 
-      }
-      
-      .dashboard-content { 
-        padding: 0 20px 30px; 
-      }
-    }
-  </style>
+        .dashboard-card p {
+            font-size: 15px;
+            color: #555;
+        }
+    </style>
 </head>
 
 <body>
-  <!-- Navbar -->
-  <div class="navbar">
-    <div class="logo">
-      <!-- Try these paths in order -->
-      <img src="/static/img/logo.png" alt="AarogyaMitra Logo" class="logo-img" id="logo-img">
-      <span class="logo-text">AarogyaMitra</span>
-    </div>
-    <ul class="menu">
-      <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-      <li><a href="/dashboard/donor" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-      <li><a href="/donate"><i class="fas fa-pills"></i> Donate Medicine</a></li>
-      <li><a href="/role-selection"><i class="fas fa-sync-alt"></i> Switch Role</a></li>
-      <li><a href="/logout"><button class="btn-nav login-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></a></li>
-    </ul>
-  </div>
 
-  <div class="dashboard-container">
-    <div class="dashboard-header">
-      <div class="welcome-message">
-        <h1><i class="fas fa-heart"></i> Welcome! 🎁</h1>
-        <p class="user-type">Thank you for being a Medicine Donor and helping your community</p>
-      </div>
-    </div>
+<!-- ✅ USE SEPARATE NAVBAR FILE -->
+{% include "navbar.html" %}
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-content">
-      <!-- Your Donations -->
-      <div class="dashboard-section">
-        <h2 class="section-title">
-          Your Medicine Donations
-          <span class="section-subtitle">(0 active donations)</span>
-        </h2>
-        
-        <!-- Empty State -->
-        <div class="empty-state">
-          <i class="material-icons">inventory_2</i>
-          <h3>No Active Donations</h3>
-          <p>You haven't donated any medicines yet. Start by donating your first medicine!</p>
-          <a href="/donate" class="btn btn-primary" style="margin-top: 20px;">
-            <i class="fas fa-plus-circle"></i> Donate Your First Medicine
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- DASHBOARD CONTENT -->
+<div class="dashboard-container">
 
-  <script>
-    // Try multiple logo paths
-    document.addEventListener('DOMContentLoaded', function() {
-      const logoImg = document.getElementById('logo-img');
-      const logoPaths = [
-        '/static/img/logo.png',
-        './static/img/logo.png',
-        'static/img/logo.png',
-        '../static/img/logo.png',
-        'img/logo.png',
-        './img/logo.png',
-        'logo.png'
-      ];
-      
-      let currentTry = 0;
-      
-      function tryNextLogo() {
-        if (currentTry < logoPaths.length) {
-          logoImg.src = logoPaths[currentTry];
-          currentTry++;
-        } else {
-          // Create fallback if all paths fail
-          logoImg.style.display = 'none';
-          const fallback = document.createElement('div');
-          fallback.className = 'logo-fallback';
-          fallback.innerHTML = '<i class="fas fa-hand-holding-medical"></i>';
-          logoImg.parentNode.insertBefore(fallback, logoImg.nextSibling);
-        }
-      }
-      
-      logoImg.onerror = tryNextLogo;
-      
-      // Also check if image loaded successfully after 1 second
-      setTimeout(() => {
-        if (!logoImg.complete || logoImg.naturalHeight === 0) {
-          tryNextLogo();
-        }
-      }, 1000);
-    });
-  </script>
+    <h2 class="welcome-title">Welcome, {{ user['fullname'] }} 👋</h2>
+
+    <div class="dashboard-grid">
+
+        <a href="/my_profile" class="dashboard-card">
+            <img src="/static/img/profile.png" class="card-icon">
+            <h3>My Profile</h3>
+            <p>View & update your profile.</p>
+        </a>
+
+        <a href="/donate_medicine" class="dashboard-card">
+            <img src="/static/img/donate.png" class="card-icon">
+            <h3>Donate Medicine</h3>
+            <p>Donate unused medicines.</p>
+        </a>
+
+        <a href="/my_donations" class="dashboard-card">
+            <img src="/static/img/history.png" class="card-icon">
+            <h3>My Donations</h3>
+            <p>Track previous donations.</p>
+        </a>
+
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+    function toggleSidebar(hamburger) {
+        const menu = document.querySelector(".menu");
+        menu.classList.toggle("active");
+        hamburger.classList.toggle("open");
+    }
+</script>
+
 </body>
 </html>

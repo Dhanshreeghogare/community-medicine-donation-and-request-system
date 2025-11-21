@@ -352,29 +352,32 @@
           <h2>Login</h2>
         </div>
 
-        <form action="/login" method="POST" id="loginForm">
-          <div class="input-group">
-            <input type="text" id="username" name="username" placeholder="Username or Email" required>
-            <div class="error-message" id="usernameError">Please enter your username or email</div>
-          </div>
+       <form action="/login_user" method="POST" id="loginForm">
 
-          <div class="input-group">
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <div class="error-message" id="passwordError">Please enter your password</div>
-          </div>
+    <div class="input-group">
+      <input type="email" id="email" name="email" placeholder="Enter your Email" required>
+      <div class="error-message" id="emailError">Please enter a valid email</div>
+    </div>
 
-          <div class="login-options">
-            <label class="remember-me">
-              <input type="checkbox" name="remember-me">
-              Remember me
-            </label>
-            <a href="#" class="forgot-password">Forgot password?</a>
-          </div>
+    <div class="input-group">
+      <input type="password" id="password" name="password" placeholder="Password" required>
+      <div class="error-message" id="passwordError">Please enter your password</div>
+    </div>
 
-          <button type="submit" class="button login-button" id="loginButton">
-            Login
-          </button>
-        </form>
+    <div class="login-options">
+      <label class="remember-me">
+        <input type="checkbox" name="remember-me">
+        Remember me
+      </label>
+      <a href="#" class="forgot-password">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="button login-button" id="loginButton">
+      Login
+    </button>
+
+</form>
+
 
         <div class="separator"><span>or</span></div>
 
@@ -386,7 +389,7 @@
         </div>
 
         <div class="signup-link">
-          Don't have an account? <a href="registration.html">Register</a>
+          Don't have an account? <a href="/registration">Register</a>
         </div>
 
         <div class="back-home">
@@ -400,6 +403,35 @@
   </div>
 
   <script>
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+
+    const response = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        alert("Login Successful!");
+
+        // ⭐ Redirect to home/index
+        window.location.href = "/";
+    } else {
+        alert(result.message);
+    }
+});
+</script>
+
+
+  <!-- <script>
     const loginForm = document.getElementById('loginForm');
     const loginButton = document.getElementById('loginButton');
     const usernameInput = document.getElementById('username');
@@ -531,6 +563,37 @@
 
     // Auto-focus on username field
     usernameInput.focus();
-  </script>
+
+    function showFlashMessage(message, type) {
+    const flash = document.createElement("div");
+    flash.className = "flash " + type;
+    flash.textContent = message;
+
+    const flashBox = document.getElementById("flashMessages");
+    flashBox.appendChild(flash);
+
+    setTimeout(() => {
+      flash.style.opacity = "0";
+      setTimeout(() => flash.remove(), 500);
+    }, 4000);
+  }
+
+  // Read URL ?msg=value
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("msg");
+
+  if (code === "success_login") {
+      showFlashMessage("Login successful!", "success");
+  }
+  else if (code === "invalid") {
+      showFlashMessage("Invalid username or password!", "error");
+  }
+  else if (code === "logout") {
+      showFlashMessage("You have been logged out.", "info");
+  }
+  else if (code === "registered") {
+      showFlashMessage("Registration successful! Please login.", "success");
+  }
+  </script> -->
 </body>
 </html>
