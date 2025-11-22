@@ -21,66 +21,58 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 15px;
+      padding: 3px;
     }
 
     .register-container {
       width: 100%;
-      max-width: 450px;
+      max-width: 320px;
     }
 
     .register-content {
       position: relative;
       width: 100%;
-      border-radius: 20px;
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
       background: url("/static/img/medicine.jpg") no-repeat center center/cover;
     }
 
-    /* Fix Google button center + responsive */
     .social-login {
       display: flex;
       justify-content: center;
       width: 100%;
-      margin-top: 10px;
+      margin-top: 2px;
     }
 
     .social-btn {
       width: 90%;
-      max-width: 330px;
-      padding: 12px;
-      border-radius: 25px;
+      max-width: 240px;
+      padding: 5px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 10px;
       font-weight: 500;
       display: flex;
       justify-content: center; 
       align-items: center;
-      gap: 10px;
+      gap: 3px;
       background-color: rgba(255,255,255,0.9);
-      transition: all 0.3s;
-    }
-
-    .social-btn:hover {
-      background-color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
     }
 
     .social-btn img {
-      width: 20px;
-      height: 20px;
+      width: 12px;
+      height: 12px;
     }
 
     .separator {
       display: flex;
       align-items: center;
       text-align: center;
-      margin: 20px 0;
+      margin: 6px 0;
       color: #ddd;
-      font-size: 13px;
+      font-size: 9px;
     }
 
     .separator::before,
@@ -91,11 +83,11 @@
     }
 
     .separator:not(:empty)::before {
-      margin-right: 10px;
+      margin-right: 3px;
     }
 
     .separator:not(:empty)::after {
-      margin-left: 10px;
+      margin-left: 3px;
     }
 
     .overlay {
@@ -111,49 +103,48 @@
     .register-box {
       position: relative;
       z-index: 2;
-      padding: 35px 25px;
+      padding: 12px 10px;
       color: white;
     }
 
     .register-header {
-      margin-bottom: 25px;
+      margin-bottom: 8px;
       text-align: center;
     }
 
     .person-icon {
-      font-size: 40px;
+      font-size: 18px;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 2px;
     }
 
     .register-header h2 {
-      font-size: 24px;
+      font-size: 14px;
       font-weight: 600;
       color: #fff;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 6px;
       position: relative;
     }
 
     .form-group label {
-      font-size: 14px;
+      font-size: 10px;
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
       color: #eee;
     }
 
     .form-group input, .form-group select {
       width: 100%;
-      padding: 12px;
+      padding: 5px 6px;
       border: none;
-      border-radius: 12px;
-      font-size: 14px;
+      border-radius: 4px;
+      font-size: 11px;
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
       backdrop-filter: blur(6px);
-      transition: all 0.3s;
     }
 
     .form-group input::placeholder {
@@ -172,49 +163,34 @@
 
     .form-group input:focus, .form-group select:focus {
       background: rgba(255, 255, 255, 0.3);
-      outline: 2px solid #ffffff55;
-      transform: translateY(-2px);
-    }
-
-    .form-group input.error, .form-group select.error {
-      border: 2px solid #ff6b6b;
-      background: rgba(255, 107, 107, 0.1);
+      outline: 1px solid #ffffff55;
     }
 
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 6px;
       background: #ff7f50;
       color: #fff;
-      font-size: 14px;
+      font-size: 11px;
       font-weight: 600;
       border: none;
-      border-radius: 25px;
+      border-radius: 12px;
       cursor: pointer;
-      margin: 15px 0;
-      transition: all 0.3s;
+      margin: 6px 0;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .btn:hover {
-      background: #ff6333;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 127, 80, 0.4);
-    }
-
     .btn:disabled {
       background: #ffb199;
       cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
     }
 
     .login-link {
       text-align: center;
-      margin-top: 10px;
-      font-size: 13px;
+      margin-top: 2px;
+      font-size: 9px;
       color: #eee;
     }
 
@@ -222,37 +198,32 @@
       color: #ffd580;
       text-decoration: none;
       font-weight: 600;
-      transition: color 0.3s;
-    }
-
-    .login-link a:hover {
-      color: #ffb347;
-      text-decoration: underline;
     }
 
     .error-message {
       color: #ff6b6b;
-      font-size: 12px;
-      margin-top: 5px;
+      font-size: 8px;
+      margin-top: 1px;
       display: none;
     }
 
     .flash-messages {
       position: fixed;
-      top: 20px;
+      top: 6px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 1000;
       width: 90%;
-      max-width: 400px;
+      max-width: 280px;
     }
 
     .flash {
-      padding: 12px 16px;
-      margin-bottom: 10px;
-      border-radius: 8px;
+      padding: 5px 6px;
+      margin-bottom: 3px;
+      border-radius: 3px;
       text-align: center;
       font-weight: 500;
+      font-size: 10px;
       animation: slideDown 0.3s ease-out;
       backdrop-filter: blur(10px);
     }
@@ -267,11 +238,6 @@
       color: #721c24; 
       border: 1px solid #f5c6cb;
     }
-    .flash.info { 
-      background: rgba(209, 236, 241, 0.9); 
-      color: #0c5460; 
-      border: 1px solid #bee5eb;
-    }
 
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-20px); }
@@ -280,41 +246,136 @@
 
     .loading {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
+      width: 12px;
+      height: 12px;
+      border: 1px solid rgba(255,255,255,.3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
-      margin-right: 10px;
+      margin-right: 3px;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .back-home {
       text-align: center;
-      margin-top: 15px;
+      margin-top: 4px;
     }
 
     .back-home a {
       color: #ffd580;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 9px;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      transition: color 0.3s;
+      gap: 1px;
     }
 
-    .back-home a:hover {
-      color: #ffb347;
-      text-decoration: underline;
-    }
-
+    /* Mobile-specific optimizations */
     @media (max-width: 480px) {
-      .register-box { padding: 25px 20px; }
-      .register-header h2 { font-size: 20px; }
-      .person-icon { font-size: 35px; }
+      body {
+        padding: 2px;
+        align-items: center;
+      }
+      
+      .register-container {
+        max-width: 100%;
+      }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 360px) {
+      body {
+        padding: 1px;
+      }
+      
+      .register-box { 
+        padding: 10px 8px; 
+      }
+      
+      .register-header h2 { 
+        font-size: 12px; 
+      }
+      
+      .person-icon { 
+        font-size: 16px; 
+      }
+      
+      .form-group { 
+        margin-bottom: 4px; 
+      }
+      
+      .form-group input, .form-group select {
+        padding: 4px 5px;
+        font-size: 10px;
+      }
+      
+      .btn {
+        padding: 5px;
+        margin: 4px 0;
+        font-size: 10px;
+      }
+    }
+
+    /* Desktop styles */
+    @media (min-width: 768px) {
+      .register-container {
+        max-width: 340px;
+      }
+      
+      .register-box {
+        padding: 16px 14px;
+      }
+      
+      .register-header {
+        margin-bottom: 12px;
+      }
+      
+      .person-icon {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+      
+      .register-header h2 {
+        font-size: 16px;
+      }
+      
+      .form-group {
+        margin-bottom: 8px;
+      }
+      
+      .form-group label {
+        font-size: 11px;
+        margin-bottom: 3px;
+      }
+      
+      .form-group input, .form-group select {
+        padding: 6px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+      
+      .btn {
+        padding: 7px;
+        margin: 8px 0;
+        font-size: 12px;
+        border-radius: 14px;
+      }
+      
+      .separator {
+        margin: 8px 0;
+        font-size: 10px;
+      }
+      
+      .social-btn {
+        padding: 6px;
+        font-size: 11px;
+      }
+      
+      .login-link {
+        margin-top: 4px;
+        font-size: 10px;
+      }
     }
 
   </style>
@@ -373,7 +434,6 @@
 
         <div class="separator"><span>or</span></div>
 
-        <!-- ✔ Google button fully centered -->
         <div class="social-login">
           <button type="button" class="social-btn" id="googleLogin">
             <img src="https://img.icons8.com/color/20/google-logo.png" alt="Google">
@@ -387,17 +447,16 @@
 
         <div class="back-home">
           <a href="index.html">
-            <span class="material-icons" style="font-size: 16px;">home</span>
+            <span class="material-icons" style="font-size: 9px;">home</span>
             Back to Home
           </a>
         </div>
       </div>
     </div>
   </div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
-  // ✅ Define all required elements
   const form = document.getElementById("registerForm");
   const usernameInput = document.getElementById("username");
   const emailInput = document.getElementById("email");
@@ -406,7 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const userTypeSelect = document.getElementById("user_type");
   const submitBtn = document.getElementById("submitBtn");
 
-  // Simple validation function
   function validateForm() {
     let valid = true;
 
@@ -448,9 +506,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return valid;
   }
 
-  // Loading animation
   function showLoading() {
-    submitBtn.innerHTML = `<div class="loading"></div> Registering...`;
+    submitBtn.innerHTML = <div class="loading"></div> Registering...;
     submitBtn.disabled = true;
   }
 
@@ -459,27 +516,20 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.disabled = false;
   }
 
-  // Flash message
   function showFlashMessage(message, type) {
     const flashBox = document.getElementById("flashMessages");
     const div = document.createElement("div");
-
-    div.className = `flash ${type}`;
+    div.className = flash ${type};
     div.innerHTML = message;
-
     flashBox.appendChild(div);
-
     setTimeout(() => div.remove(), 3000);
   }
 
-  // MAIN SUBMIT FUNCTION
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     showLoading();
-
     const userData = {
       username: usernameInput.value,
       email: emailInput.value,
@@ -497,7 +547,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const result = await response.json();
-
       hideLoading();
 
       if (result.success) {
@@ -508,17 +557,13 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showFlashMessage(result.message, "error");
       }
-
     } catch (error) {
       hideLoading();
       showFlashMessage("Server error! Please try again later.", "error");
-      console.error(error);
     }
   });
-
 });
 </script>
 
- 
 </body>
 </html>

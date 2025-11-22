@@ -1,230 +1,46 @@
-<!-- ================= NAVBAR CSS ================= -->
-
-
-<style>
-    /* Global */
-* {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background-color: #fafdfb;
-  color: #333;
-  scroll-behavior: smooth;
-}
-
-/* Theme Colors */
-:root {
-  --primary: #f57c00;
-  --accent: #f9a178;
-  --light: #ffffff;
-  --text-dark: #2e2e2e;
-  --shadow: rgba(0,0,0,0.1);
-}
-
-/* ---------------- NAVBAR ---------------- */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 50px;
-  background: var(--light);
-  border-bottom: 1px solid #e3f0ea;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.logo img {
-  height: 40px;
-  width: 40px;
-  border-radius: 8px;
-}
-.logo-text {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-/* Menu */
-.menu {
-  display: flex;
-  list-style: none;
-  align-items: center;
-  gap: 25px;
-  padding: 0;
-  margin: 0;
-}
-.menu li a {
-  text-decoration: none;
-  color: var(--text-dark);
-  font-weight: 500;
-  transition: color 0.3s;
-}
-.menu li a:hover {
-  color: var(--primary);
-}
-
-/* Buttons */
-.btn-nav {
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 25px;
-  transition: all 0.3s ease;
-}
-.login-btn {
-  background: var(--primary);
-  color: #fff;
-}
-.btn-nav:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
-}
-
-/* Hamburger (Mobile) */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  gap: 5px;
-}
-.hamburger div {
-  width: 25px;
-  height: 3px;
-  background-color: #333;
-  transition: all 0.3s;
-}
-
-.hamburger.active div:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-.hamburger.active div:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.active div:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* ---------------- DROPDOWN (Does NOT conflict with menu) ---------------- */
-.profile-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.profile-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid white;
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  background-color: #fff;
-  min-width: 180px;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
-  z-index: 999;
-}
-
-.profile-dropdown:hover .dropdown-menu {
-  display: block;
-}
-
-.dropdown-menu a {
-  display: block;
-  padding: 10px 8px;
-  color: #333;
-  text-decoration: none;
-  border-radius: 6px;
-}
-
-.dropdown-menu a:hover {
-  background-color: #f0f0f0;
-}
-
-/* ---------------- SIDEBAR (Isolated so no conflict) ---------------- */
-#sidebar-menu .sidebar a,
-#sidebar-menu .sidebar .sidebar-link {
-  display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: black;
-  font-size: 18px;
-  transition: background 0.3s;
-}
-
-#sidebar-menu .sidebar a:hover,
-#sidebar-menu .sidebar .sidebar-link:hover {
-  background: var(--primary);
-}
-
-</style>
-<!-- ================= NAVBAR HTML ================= -->
-<nav class="navbar">
-
-  <!-- LOGO -->
+<link rel="stylesheet" href="/static/css/navbar.css">
+<!-- Navbar -->
+<div class="navbar">
   <div class="logo">
-    <img src="/static/img/logo.png" alt="Logo">
+    <img src="/static/img/logo.png" alt="AarogyaMitra Logo">
     <span class="logo-text">AarogyaMitra</span>
   </div>
 
-  <!-- ========== MENU ========== -->
   <ul class="menu">
-    <li><a href="/">Home</a></li>
-    <li><a href="/#about">About</a></li>
-    <li><a href="/#medicines">Available Medicines</a></li>
-    <li><a href="/#contact">Contact</a></li>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#medicines">Available Medicines</a></li>
+    <li><a href="#contact">Contact</a></li>
 
-    {% if not session.get('user') %}
-      <!-- NOT LOGGED IN -->
+    {% if session.get('user') %}
+
+      <!-- LOGOUT BUTTON REMOVED (GOES INSIDE DROPDOWN) -->
+
+      <!-- ⭐ Profile Dropdown -->
+      <li class="profile-dropdown">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+             alt="Profile"
+             class="profile-icon">
+
+        <div class="dropdown-menu">
+          <p class="user-name">{{ session['user']['username'] }}</p>
+          <a href="/donor/dashboard">My Profile</a>
+          <a href="#">Settings</a>
+          <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+      </li>
+
+    {% else %}
       <li>
         <a href="/login">
           <button class="btn-nav login-btn">Login</button>
         </a>
       </li>
-
-    {% else %}
-      <!-- LOGGED IN -->
-      <li>
-        <div class="profile-dropdown">
-          <img src="/static/img/profile.jpg" class="profile-icon">
-
-          <div class="dropdown-menu">
-            <div class="user-name">Hello, {{ session['user']['username'] }}</div>
-            <a href="/donor-dashboard">Dashboard</a>
-            <a href="/profile">My Profile</a>
-            <a href="/logout" class="logout-btn">Logout</a>
-          </div>
-        </div>
-      </li>
     {% endif %}
   </ul>
 
-  <!-- MOBILE HAMBURGER -->
   <div class="hamburger" onclick="toggleSidebar(this)">
     <div></div><div></div><div></div>
   </div>
-</nav>
+</div>
 
-<!-- ================= NAVBAR JAVASCRIPT ================= -->
-<script>
-function toggleSidebar(x) {
-  x.classList.toggle("active");
-  alert("Sidebar will be added later.");
-}
-</script>

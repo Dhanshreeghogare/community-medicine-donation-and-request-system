@@ -27,80 +27,6 @@
     --shadow: rgba(0,0,0,0.1);
   }
 
-  .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 50px;
-    background: var(--light);
-    border-bottom: 1px solid #e3f0ea;
-    position: fixed;
-    top: 0; left: 0; width: 100%;
-    z-index: 1000;
-  }
-  .sidebar a,
-.sidebar .sidebar-link {
-  display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: black;
-  font-size: 18px;
-  transition: background 0.3s;
-}
-
-.sidebar a:hover,
-.sidebar .sidebar-link:hover {
-  background: #f57c00; /* Hover color */
-}
-
-
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo img { 
-    height: 40px; 
-    width: 40px;
-    border-radius: 8px;
-  }
-  .logo-text { font-size: 22px; font-weight: 600; color: var(--primary); }
-
-  .menu {
-    display: flex; list-style: none;
-    align-items: center; gap: 25px; padding: 0; margin: 0;
-  }
-
-  .menu li a {
-    text-decoration: none;
-    color: var(--text-dark);
-    font-weight: 500;
-    transition: color 0.3s;
-  }
-  .menu li a:hover { color: var(--primary); }
-
-  .btn-nav {
-    border: none; padding: 10px 20px;
-    cursor: pointer; font-weight: 600;
-    border-radius: 25px; transition: all 0.3s ease;
-  }
-  .login-btn { background: var(--primary); color: #fff; }
-  .btn-nav:hover { opacity: 0.9; transform: scale(1.05); }
-
-  .hamburger {
-    display: none; flex-direction: column;
-    cursor: pointer; gap: 5px;
-  }
-
-  .hamburger div {
-    width: 25px; height: 3px; background-color: #333;
-    transition: all 0.3s;
-  }
-
-  .hamburger.active div:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-  .hamburger.active div:nth-child(2) { opacity: 0; }
-  .hamburger.active div:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-  }
-
   /*navbar updated */
   /* Profile Icon */
 .profile-icon {
@@ -214,7 +140,7 @@
   animation-play-state: paused;
 }
 
-  #home {
+ #home {
     background: url("/static/img/medicine.jpg") center/cover no-repeat;
     color: #fff; position: relative;
     display: flex; align-items: center; justify-content: center;
@@ -277,7 +203,8 @@
   font-size: 52px;
   font-weight: 700;
   margin-bottom: 15px;
-  white-space: nowrap;
+ white-space:nowrap;
+  
 }
 
 .hero h1 span {
@@ -803,7 +730,7 @@
 
   
 
-  @media (max-width: 768px) {
+  <!-- @media (max-width: 768px) {
     .navbar { padding: 12px 20px; }
     .menu { display: none; }
     .hamburger { display: flex; }
@@ -816,7 +743,129 @@
     .search-filter {
       flex-direction: column;
     }
+  } -->
+
+
+/*   GLOBAL RESPONSIVE FIXES           */
+
+@media (max-width: 1100px) {
+  section {
+    padding: 100px 30px 30px;
   }
+
+  .hero h1 {
+    font-size: 46px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+}
+
+
+
+/*   TABLET RESPONSIVE (≤900px)        */
+
+@media (max-width: 900px) {
+  .about-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-text h1 {
+    font-size: 34px;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+  }
+
+  .medicine-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+
+/*   MOBILE RESPONSIVE (≤768px)        */
+@media (max-width: 768px) {
+
+  /* Navbar */
+  .navbar {
+    padding: 12px 20px;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Sections */
+  section {
+    padding: 110px 20px 40px;
+  }
+
+  /* Hero text */
+  .hero h1 {
+    font-size: 34px;
+    white-space: normal;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-light,
+  .btn-orange {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Medicines */
+  .medicines-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Contact */
+  .contact-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .contact-icon {
+    margin-bottom: 12px;
+  }
+}
+
+
+
+/*   SMALL MOBILE (≤480px)             */
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .about-text h1 {
+    font-size: 28px;
+  }
+
+  .about-image img {
+    max-width: 270px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1060,7 +1109,7 @@
 </section>
 
 <footer>
-  © 2025 AarogyaMitra — All Rights Reserved | Designed with ❤️ for Community Healthcare
+  © 2025 AarogyaMitra — All Rights Reserved | Designed with ❤ for Community Healthcare
 </footer>
 <script>
 // Empty medicine data - No medicines available
@@ -1251,7 +1300,7 @@ const faqItems = document.querySelectorAll(".faq-item");
         answer.style.maxHeight = null;
       }
     });
-  });
+  });
 
 // Example of dynamically updating ticker text using JavaScript
 const tickerMessages = [
