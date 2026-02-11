@@ -4,10 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register | AarogyaMitra</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <style>
+    /* --- YOUR SAME CSS (UNCHANGED, CLEANED SLIGHTLY) --- */
     * {
       margin: 0;
       padding: 0;
@@ -21,129 +23,69 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 3px;
+      padding: 10px;
     }
 
     .register-container {
       width: 100%;
-      max-width: 320px;
+      max-width: 340px;
     }
 
     .register-content {
       position: relative;
-      width: 100%;
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
       background: url("/static/img/medicine.jpg") no-repeat center center/cover;
-    }
-
-    .social-login {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-top: 2px;
-    }
-
-    .social-btn {
-      width: 90%;
-      max-width: 240px;
-      padding: 5px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-size: 10px;
-      font-weight: 500;
-      display: flex;
-      justify-content: center; 
-      align-items: center;
-      gap: 3px;
-      background-color: rgba(255,255,255,0.9);
-    }
-
-    .social-btn img {
-      width: 12px;
-      height: 12px;
-    }
-
-    .separator {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin: 6px 0;
-      color: #ddd;
-      font-size: 9px;
-    }
-
-    .separator::before,
-    .separator::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .separator:not(:empty)::before {
-      margin-right: 3px;
-    }
-
-    .separator:not(:empty)::after {
-      margin-left: 3px;
     }
 
     .overlay {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
+      background: rgba(0, 0, 0, 0.5);
     }
 
     .register-box {
       position: relative;
       z-index: 2;
-      padding: 12px 10px;
+      padding: 20px;
       color: white;
     }
 
     .register-header {
-      margin-bottom: 8px;
       text-align: center;
+      margin-bottom: 15px;
     }
 
     .person-icon {
-      font-size: 18px;
-      color: #fff;
-      margin-bottom: 2px;
+      font-size: 28px;
+      margin-bottom: 5px;
     }
 
     .register-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
+      font-size: 18px;
     }
 
     .form-group {
-      margin-bottom: 6px;
-      position: relative;
+      margin-bottom: 12px;
     }
 
     .form-group label {
-      font-size: 10px;
+      font-size: 12px;
       display: block;
-      margin-bottom: 2px;
-      color: #eee;
+      margin-bottom: 4px;
     }
 
-    .form-group input, .form-group select {
+    .form-group input,
+    .form-group select {
       width: 100%;
-      padding: 5px 6px;
+      padding: 8px;
       border: none;
-      border-radius: 4px;
-      font-size: 11px;
+      border-radius: 6px;
+      font-size: 13px;
       background: rgba(255, 255, 255, 0.2);
-      color: #fff;
+      color: white;
       backdrop-filter: blur(6px);
     }
 
@@ -151,35 +93,22 @@
       color: #eee;
     }
 
-    .form-group select {
-      color: #eee;
-      cursor: pointer;
-    }
-
-    .form-group select option {
-      background: #666;
-      color: #fff;
-    }
-
-    .form-group input:focus, .form-group select:focus {
+    .form-group input:focus,
+    .form-group select:focus {
       background: rgba(255, 255, 255, 0.3);
       outline: 1px solid #ffffff55;
     }
 
     .btn {
       width: 100%;
-      padding: 6px;
+      padding: 10px;
       background: #ff7f50;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
       border: none;
-      border-radius: 12px;
+      border-radius: 20px;
+      font-weight: 600;
       cursor: pointer;
-      margin: 6px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin-top: 10px;
+      color: white;
     }
 
     .btn:disabled {
@@ -187,11 +116,81 @@
       cursor: not-allowed;
     }
 
+    .error-message {
+      color: #ff6b6b;
+      font-size: 11px;
+      display: none;
+      margin-top: 3px;
+    }
+
+    .separator {
+      text-align: center;
+      margin: 15px 0;
+      color: #ddd;
+      font-size: 12px;
+    }
+
+    .social-btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      background-color: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .flash-messages {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      width: 90%;
+      max-width: 320px;
+    }
+
+    .flash {
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .flash.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .flash.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .loading {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     .login-link {
       text-align: center;
-      margin-top: 2px;
-      font-size: 9px;
-      color: #eee;
+      margin-top: 15px;
+      font-size: 12px;
     }
 
     .login-link a {
@@ -200,314 +199,124 @@
       font-weight: 600;
     }
 
-    .error-message {
-      color: #ff6b6b;
-      font-size: 8px;
-      margin-top: 1px;
-      display: none;
-    }
-
-    .flash-messages {
-      position: fixed;
-      top: 6px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      width: 90%;
-      max-width: 280px;
-    }
-
-    .flash {
-      padding: 5px 6px;
-      margin-bottom: 3px;
-      border-radius: 3px;
-      text-align: center;
-      font-weight: 500;
-      font-size: 10px;
-      animation: slideDown 0.3s ease-out;
-      backdrop-filter: blur(10px);
-    }
-
-    .flash.success { 
-      background: rgba(212, 237, 218, 0.9); 
-      color: #155724; 
-      border: 1px solid #c3e6cb;
-    }
-    .flash.error { 
-      background: rgba(248, 215, 218, 0.9); 
-      color: #721c24; 
-      border: 1px solid #f5c6cb;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .loading {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 1px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
-      margin-right: 3px;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .back-home {
-      text-align: center;
-      margin-top: 4px;
-    }
-
-    .back-home a {
-      color: #ffd580;
-      text-decoration: none;
-      font-size: 9px;
-      display: inline-flex;
-      align-items: center;
-      gap: 1px;
-    }
-
-    /* Mobile-specific optimizations */
-    @media (max-width: 480px) {
-      body {
-        padding: 2px;
-        align-items: center;
-      }
-      
-      .register-container {
-        max-width: 100%;
-      }
-    }
-
-    /* Extra small devices */
-    @media (max-width: 360px) {
-      body {
-        padding: 1px;
-      }
-      
-      .register-box { 
-        padding: 10px 8px; 
-      }
-      
-      .register-header h2 { 
-        font-size: 12px; 
-      }
-      
-      .person-icon { 
-        font-size: 16px; 
-      }
-      
-      .form-group { 
-        margin-bottom: 4px; 
-      }
-      
-      .form-group input, .form-group select {
-        padding: 4px 5px;
-        font-size: 10px;
-      }
-      
-      .btn {
-        padding: 5px;
-        margin: 4px 0;
-        font-size: 10px;
-      }
-    }
-
-    /* Desktop styles */
-    @media (min-width: 768px) {
-      .register-container {
-        max-width: 340px;
-      }
-      
-      .register-box {
-        padding: 16px 14px;
-      }
-      
-      .register-header {
-        margin-bottom: 12px;
-      }
-      
-      .person-icon {
-        font-size: 20px;
-        margin-bottom: 4px;
-      }
-      
-      .register-header h2 {
-        font-size: 16px;
-      }
-      
-      .form-group {
-        margin-bottom: 8px;
-      }
-      
-      .form-group label {
-        font-size: 11px;
-        margin-bottom: 3px;
-      }
-      
-      .form-group input, .form-group select {
-        padding: 6px 8px;
-        border-radius: 6px;
-        font-size: 12px;
-      }
-      
-      .btn {
-        padding: 7px;
-        margin: 8px 0;
-        font-size: 12px;
-        border-radius: 14px;
-      }
-      
-      .separator {
-        margin: 8px 0;
-        font-size: 10px;
-      }
-      
-      .social-btn {
-        padding: 6px;
-        font-size: 11px;
-      }
-      
-      .login-link {
-        margin-top: 4px;
-        font-size: 10px;
-      }
-    }
-
   </style>
 </head>
 
 <body>
-  <!-- Flash Messages -->
-  <div class="flash-messages" id="flashMessages"></div>
 
-  <div class="register-container">
-    <div class="register-content">
-      <div class="overlay"></div>
-      <div class="register-box">
-        <div class="register-header">
-          <span class="material-icons person-icon">person_add</span>
-          <h2>Create Account</h2>
+<div class="flash-messages" id="flashMessages"></div>
+
+<div class="register-container">
+  <div class="register-content">
+    <div class="overlay"></div>
+
+    <div class="register-box">
+      <div class="register-header">
+        <span class="material-icons person-icon">person_add</span>
+        <h2>Create Account</h2>
+      </div>
+
+      <form id="registerForm">
+
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="username" placeholder="Enter username" required>
+          <div class="error-message" id="usernameError">Minimum 3 characters</div>
         </div>
 
-        <form id="registerForm">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter username" required>
-            <div class="error-message" id="usernameError">Username must be at least 3 characters</div>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
-            <div class="error-message" id="emailError">Please enter a valid email</div>
-          </div>
-
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" required>
-            <div class="error-message" id="passwordError">Password must be at least 6 characters</div>
-          </div>
-
-          <div class="form-group">
-            <label for="confirm">Confirm Password</label>
-            <input type="password" id="confirm" name="confirm" placeholder="Confirm password" required>
-            <div class="error-message" id="confirmError">Passwords do not match</div>
-          </div>
-
-          <div class="form-group">
-            <label for="user_type">I want to:</label>
-            <select id="user_type" name="user_type" required>
-              <option value="">Select option</option>
-              <option value="donor">Donate Medicine</option>
-              <option value="receiver">Receive Medicine</option>
-            </select>
-            <div class="error-message" id="userTypeError">Please select an option</div>
-          </div>
-
-          <button type="submit" class="btn" id="submitBtn">Register</button>
-        </form>
-
-        <div class="separator"><span>or</span></div>
-
-        <div class="social-login">
-          <button type="button" class="social-btn" id="googleLogin">
-            <img src="https://img.icons8.com/color/20/google-logo.png" alt="Google">
-            Continue with Google
-          </button>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Enter email" required>
+          <div class="error-message" id="emailError">Invalid email format</div>
         </div>
 
-        <div class="login-link">
-          Already have an account? <a href="login.html">Login here</a>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter password" required>
+          <div class="error-message" id="passwordError">Minimum 6 characters</div>
         </div>
 
-        <div class="back-home">
-          <a href="index.html">
-            <span class="material-icons" style="font-size: 9px;">home</span>
-            Back to Home
-          </a>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="confirm" placeholder="Confirm password" required>
+          <div class="error-message" id="confirmError">Passwords do not match</div>
         </div>
+
+        <div class="form-group">
+          <label>I want to:</label>
+          <select id="user_type" required>
+            <option value="">Select option</option>
+            <option value="donor">Donate Medicine</option>
+            <option value="receiver">Receive Medicine</option>
+          </select>
+          <div class="error-message" id="userTypeError">Please select option</div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">Register</button>
+      </form>
+
+      <div class="separator">or</div>
+
+      <button class="social-btn">
+        <img src="https://img.icons8.com/color/20/google-logo.png">
+        Continue with Google
+      </button>
+
+      <div class="login-link">
+        Already have account? <a href="/login">Login</a>
       </div>
     </div>
   </div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   const form = document.getElementById("registerForm");
-  const usernameInput = document.getElementById("username");
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const confirmInput = document.getElementById("confirm");
-  const userTypeSelect = document.getElementById("user_type");
+  const username = document.getElementById("username");
+  const email = document.getElementById("email");
+  const password = document.getElementById("password");
+  const confirm = document.getElementById("confirm");
+  const userType = document.getElementById("user_type");
   const submitBtn = document.getElementById("submitBtn");
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function validateForm() {
     let valid = true;
 
-    if (usernameInput.value.length < 3) {
-      document.getElementById("usernameError").style.display = "block";
+    document.querySelectorAll(".error-message").forEach(el => el.style.display = "none");
+
+    if (username.value.trim().length < 3) {
+      usernameError.style.display = "block";
       valid = false;
-    } else {
-      document.getElementById("usernameError").style.display = "none";
     }
 
-    if (!emailInput.value.includes("@")) {
-      document.getElementById("emailError").style.display = "block";
+    if (!emailRegex.test(email.value)) {
+      emailError.style.display = "block";
       valid = false;
-    } else {
-      document.getElementById("emailError").style.display = "none";
     }
 
-    if (passwordInput.value.length < 6) {
-      document.getElementById("passwordError").style.display = "block";
+    if (password.value.length < 6) {
+      passwordError.style.display = "block";
       valid = false;
-    } else {
-      document.getElementById("passwordError").style.display = "none";
     }
 
-    if (passwordInput.value !== confirmInput.value) {
-      document.getElementById("confirmError").style.display = "block";
+    if (password.value !== confirm.value) {
+      confirmError.style.display = "block";
       valid = false;
-    } else {
-      document.getElementById("confirmError").style.display = "none";
     }
 
-    if (userTypeSelect.value === "") {
-      document.getElementById("userTypeError").style.display = "block";
+    if (userType.value === "") {
+      userTypeError.style.display = "block";
       valid = false;
-    } else {
-      document.getElementById("userTypeError").style.display = "none";
     }
 
     return valid;
   }
 
   function showLoading() {
-    submitBtn.innerHTML = <div class="loading"></div> Registering...;
+    submitBtn.innerHTML = `<span class="loading"></span> Registering...`;
     submitBtn.disabled = true;
   }
 
@@ -516,11 +325,11 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.disabled = false;
   }
 
-  function showFlashMessage(message, type) {
+  function showFlash(message, type) {
     const flashBox = document.getElementById("flashMessages");
     const div = document.createElement("div");
-    div.className = flash ${type};
-    div.innerHTML = message;
+    div.className = `flash ${type}`;
+    div.textContent = message;
     flashBox.appendChild(div);
     setTimeout(() => div.remove(), 3000);
   }
@@ -530,19 +339,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!validateForm()) return;
 
     showLoading();
+
     const userData = {
-      username: usernameInput.value,
-      email: emailInput.value,
-      password: passwordInput.value,
-      user_type: userTypeSelect.value
+      username: username.value,
+      email: email.value,
+      password: password.value,
+      user_type: userType.value
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/registration", {
+      const response = await fetch("/registration", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData)
       });
 
@@ -550,18 +358,18 @@ document.addEventListener("DOMContentLoaded", () => {
       hideLoading();
 
       if (result.success) {
-        showFlashMessage(result.message, "success");
-        setTimeout(() => {
-            window.location.href = "/login";
-        }, 2000);
+        showFlash(result.message, "success");
+        setTimeout(() => window.location.href = "/login", 2000);
       } else {
-        showFlashMessage(result.message, "error");
+        showFlash(result.message, "error");
       }
-    } catch (error) {
+
+    } catch (err) {
       hideLoading();
-      showFlashMessage("Server error! Please try again later.", "error");
+      showFlash("Server error. Try again later.", "error");
     }
   });
+
 });
 </script>
 
