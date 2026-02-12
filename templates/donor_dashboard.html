@@ -582,6 +582,98 @@ textarea.form-control {
     .donation-form-container{padding:20px;}
     .image-upload-area{padding:20px;}
 }
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: #fff;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-30px);
+    transition: transform 0.4s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.modal-header h3 {
+    font-size: 22px;
+    color: var(--dark);
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--gray);
+    transition: color 0.3s;
+    line-height: 1;
+}
+
+.modal-close-btn:hover {
+    color: var(--dark);
+}
+
+.modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    max-height: calc(80vh - 80px);
+}
+
+/* Scrollbar styling */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
 </style>
 
 </head>
@@ -609,7 +701,7 @@ textarea.form-control {
                      alt="Profile" class="profile-icon" onclick="toggleDropdown()">
 
                 <div class="dropdown-menu" id="profileMenu">
-                    <div class="dropdown-header">{{ session['user']['username'] }}</div>
+                    <div class="dropdown-header">{{user.username }}</div>
                     <a href="/my-profile">My Profile</a>
                     <a href="/setting">Setting</a>
                     <a href="/logout" style="color:red;">Logout</a>
@@ -628,17 +720,17 @@ textarea.form-control {
         <div class="user-avatar">
           <i class="fas fa-user"></i>
         </div>
-        <h3 class="user-name">Rahul Sharma</h3>
-        <p class="user-role">Medicine Donor</p>
+        <h3 class="user-name">{{ user.username }}</h3>
+<p class="user-role">Medicine {{ user.user_type | capitalize }}</p>
+
+       
       </div>
       
       <ul class="sidebar-menu">
         <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
         <li><a href="#" id="sidebar-donate-btn"><i class="fas fa-pills"></i> Donate Medicine</a></li>
-        <li><a href="#"><i class="fas fa-history"></i> Donation History</a></li>
-        <li><a href="#"><i class="fas fa-bell"></i> Notifications</a></li>
-        <li><a href="#"><i class="fas fa-user-cog"></i> Profile Settings</a></li>
-        <li><a href="#"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+        <li><a href="#"id="donation-history-link"><i class="fas fa-history"></i> Donation History</a></li>
+       
       </ul>
     </div>
 
@@ -746,6 +838,8 @@ textarea.form-control {
         </ul>
       </div>
 
+
+
       <!-- Donation Information -->
       <div class="dashboard-section">
         <div class="section-header">
@@ -786,8 +880,7 @@ textarea.form-control {
           </div>
         </div>
       </div>
-    </div>
-  </div>
+
 
   <!-- Slide-up Donation Form -->
   <div class="donation-overlay" id="donation-overlay">
@@ -797,7 +890,10 @@ textarea.form-control {
         <button class="close-btn" id="close-form">&times;</button>
       </div>
       
-      <form class="donation-form" id="donation-form">
+      <form class="donation-form"
+      id="donation-form"
+      enctype="multipart/form-data">
+
         <!-- Image Upload Section -->
         <div class="image-upload-container">
           <div class="image-upload-area" id="uploadArea">
@@ -810,7 +906,7 @@ textarea.form-control {
               <p style="font-size: 12px; margin-top: 5px;">Supported formats: JPG, PNG, WEBP (Max 5MB)</p>
             </div>
             <div class="browse-btn" id="browseBtn">Browse Files</div>
-            <input type="file" id="imageInput" accept="image/*">
+            <input type="file" id="imageInput" name="image"  accept="image/*">
           </div>
           
           <div class="image-preview" id="imagePreview">
@@ -823,27 +919,27 @@ textarea.form-control {
         
         <div class="form-group">
           <label for="medicineName">Medicine Name *</label>
-          <input type="text" id="medicineName" class="form-control" placeholder="Enter medicine name" required>
+          <input type="text" id="medicineName" name="medicineName" class="form-control" placeholder="Enter medicine name" required>
         </div>
         
         <div class="form-group">
           <label for="manufacturer">Manufacturer *</label>
-          <input type="text" id="manufacturer" class="form-control" placeholder="Enter manufacturer name" required>
+          <input type="text" id="manufacturer" name="manufacturer"  class="form-control" placeholder="Enter manufacturer name" required>
         </div>
         
         <div class="form-group">
           <label for="expiryDate">Expiry Date *</label>
-          <input type="date" id="expiryDate" class="form-control" required>
+          <input type="date" id="expiryDate" name="expiryDate" class="form-control" required>
         </div>
         
         <div class="form-group">
           <label for="quantity">Quantity *</label>
-          <input type="number" id="quantity" class="form-control" placeholder="Number of units" required>
+          <input type="number" id="quantity" name="quantity"class="form-control" placeholder="Number of units" required>
         </div>
         
         <div class="form-group">
           <label for="category">Medicine Category *</label>
-          <select id="category" class="form-control" required>
+          <select id="category" name="category" class="form-control" required>
             <option value="">Select category</option>
             <option value="tablets">Tablets</option>
             <option value="syrup">Syrup</option>
@@ -855,7 +951,7 @@ textarea.form-control {
         
         <div class="form-group">
           <label for="condition">Medicine Condition *</label>
-          <select id="condition" class="form-control" required>
+          <select id="condition" name="condition"  class="form-control" required>
             <option value="">Select condition</option>
             <option value="sealed">Sealed/Unopened</option>
             <option value="good">Good Condition</option>
@@ -865,7 +961,7 @@ textarea.form-control {
         
         <div class="form-group full-width">
           <label for="description">Additional Details</label>
-          <textarea id="description" class="form-control" placeholder="Any additional information about the medicine"></textarea>
+          <textarea id="description" name="description" class="form-control" placeholder="Any additional information about the medicine"></textarea>
         </div>
         
         <div class="form-actions">
@@ -876,7 +972,42 @@ textarea.form-control {
     </div>
   </div>
 
-  <script>
+
+  <!-- Donation History Modal -->
+<div class="modal-overlay" id="history-modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3><i class="fas fa-history" style="margin-right: 10px; color: var(--primary);"></i> Your Donation History</h3>
+      <button class="modal-close-btn" id="close-history-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <select id="history-filter-modal" class="form-control" style="width: auto; padding: 8px 15px;">
+          <option value="all">All Donations</option>
+          <option value="available">Available</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="collected">Collected</option>
+          <option value="completed">Completed</option>
+        </select>
+        <button class="btn btn-outline" id="refresh-history-modal-btn">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      
+      <div id="history-modal-loading" style="text-align: center; padding: 40px; display: none;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--primary);"></i>
+        <p style="margin-top: 15px; color: var(--gray);">Loading your donation history...</p>
+      </div>
+      
+      <div id="history-modal-content">
+        <!-- Donation history will be loaded here via JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
     // Get DOM elements
     const donateBtn = document.getElementById('donate-btn');
     const sidebarDonateBtn = document.getElementById('sidebar-donate-btn');
@@ -893,174 +1024,805 @@ textarea.form-control {
     const previewImage = document.getElementById('previewImage');
     const removeImage = document.getElementById('removeImage');
     
-    // Open donation form
+    // ========== DONATION FORM CONTROLS ==========
     function openDonationForm() {
-      donationOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
+        donationOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
     
-    // Close donation form
     function closeDonationForm() {
-      donationOverlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
-      // Reset form and image preview when closing
-      donationForm.reset();
-      imagePreview.classList.remove('active');
-      imageInput.value = '';
+        donationOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        if (donationForm) {
+            donationForm.reset();
+        }
+        if (imagePreview) {
+            imagePreview.classList.remove('active');
+        }
+        if (imageInput) {
+            imageInput.value = '';
+        }
     }
     
     // Event listeners for form open/close
-    donateBtn.addEventListener('click', openDonationForm);
-    sidebarDonateBtn.addEventListener('click', openDonationForm);
-    closeFormBtn.addEventListener('click', closeDonationForm);
-    cancelBtn.addEventListener('click', closeDonationForm);
+    if (donateBtn) donateBtn.addEventListener('click', openDonationForm);
+    if (sidebarDonateBtn) sidebarDonateBtn.addEventListener('click', openDonationForm);
+    if (closeFormBtn) closeFormBtn.addEventListener('click', closeDonationForm);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeDonationForm);
     
     // Close form when clicking outside
-    donationOverlay.addEventListener('click', function(e) {
-      if (e.target === donationOverlay) {
-        closeDonationForm();
-      }
-    });
+    if (donationOverlay) {
+        donationOverlay.addEventListener('click', function(e) {
+            if (e.target === donationOverlay) {
+                closeDonationForm();
+            }
+        });
+    }
     
-    // Image Upload Functionality
-    browseBtn.addEventListener('click', () => {
-      imageInput.click();
-    });
+    // ========== IMAGE UPLOAD ==========
+    if (browseBtn) {
+        browseBtn.addEventListener('click', () => {
+            imageInput.click();
+        });
+    }
     
-    imageInput.addEventListener('change', function() {
-      if (this.files && this.files[0]) {
-        const file = this.files[0];
-        
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          alert('File size too large! Please select an image under 5MB.');
-          return;
-        }
-        
-        // Check file type
-        if (!file.type.match('image.*')) {
-          alert('Please select a valid image file (JPG, PNG, WEBP).');
-          return;
-        }
-        
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          previewImage.src = e.target.result;
-          imagePreview.classList.add('active');
-        }
-        
-        reader.readAsDataURL(file);
-      }
-    });
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                
+                // Check file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size too large! Please select an image under 5MB.');
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file (JPG, PNG, WEBP).');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    imagePreview.classList.add('active');
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    }
     
     // Drag and drop functionality
-    uploadArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      uploadArea.classList.add('dragover');
-    });
-    
-    uploadArea.addEventListener('dragleave', function() {
-      uploadArea.classList.remove('dragover');
-    });
-    
-    uploadArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      uploadArea.classList.remove('dragover');
-      
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0];
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
         
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          alert('File size too large! Please select an image under 5MB.');
-          return;
-        }
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.classList.remove('dragover');
+        });
         
-        // Check file type
-        if (!file.type.match('image.*')) {
-          alert('Please select a valid image file (JPG, PNG, WEBP).');
-          return;
-        }
-        
-        // Set the file to the input
-        imageInput.files = e.dataTransfer.files;
-        
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          previewImage.src = e.target.result;
-          imagePreview.classList.add('active');
-        }
-        
-        reader.readAsDataURL(file);
-      }
-    });
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                
+                // Check file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size too large! Please select an image under 5MB.');
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file (JPG, PNG, WEBP).');
+                    return;
+                }
+                
+                // Set the file to the input
+                imageInput.files = e.dataTransfer.files;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    imagePreview.classList.add('active');
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    }
     
     // Remove image
-    removeImage.addEventListener('click', function() {
-      imageInput.value = '';
-      imagePreview.classList.remove('active');
-    });
+    if (removeImage) {
+        removeImage.addEventListener('click', function() {
+            imageInput.value = '';
+            imagePreview.classList.remove('active');
+        });
+    }
     
-    // Form submission
-    donationForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const medicineName = document.getElementById('medicineName').value;
-      const expiryDate = document.getElementById('expiryDate').value;
-      const hasImage = imageInput.files.length > 0;
-      
-      if (!medicineName || !expiryDate) {
-        alert('Please fill in all required fields');
-        return;
-      }
-      
-      // In a real application, you would submit the form data to a server
-      let message = 'Thank you for your donation! Our team will contact you shortly.';
-      if (hasImage) {
-        message += '\n\nNote: Your medicine image has been uploaded successfully.';
-      } else {
-        message += '\n\nNote: No medicine image was provided.';
-      }
-      
-      alert(message);
-      closeDonationForm();
-    });
-    
-    // Update current date for expiry date minimum
-    document.getElementById('expiryDate').min = new Date().toISOString().split('T')[0];
-    
-    // Close form with Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeDonationForm();
-      }
-    });
-        function toggleDropdown() {
-            document.getElementById("profileMenu").classList.toggle("active");
+    // ========== LOAD DONOR STATISTICS ==========
+    async function loadDonorStats() {
+        try {
+            const res = await fetch("/get_donor_stats");
+            const data = await res.json();
+            
+            if (data.success) {
+                const stats = data.stats;
+                
+                // Update stat cards - set default to 0 if no donations
+                const statValues = document.querySelectorAll('.stat-card .stat-info h3');
+                if (statValues.length >= 4) {
+                    statValues[0].innerText = stats.total_donated || 0;
+                    statValues[1].innerText = stats.successful || 0;
+                    statValues[2].innerText = stats.pending || 0;
+                    statValues[3].innerText = stats.lives_impacted || 0;
+                }
+            } else {
+                // If API call fails, set all stats to 0
+                setDefaultStats();
+            }
+        } catch (err) {
+            console.error("Error loading stats:", err);
+            // Set default values to 0 on error
+            setDefaultStats();
         }
+    }
+    
+    // Function to set default stats to 0
+    function setDefaultStats() {
+        const statValues = document.querySelectorAll('.stat-card .stat-info h3');
+        if (statValues.length >= 4) {
+            statValues[0].innerText = '0';
+            statValues[1].innerText = '0';
+            statValues[2].innerText = '0';
+            statValues[3].innerText = '0';
+        }
+    }
+    
+    // ========== LOAD RECENT ACTIVITY ==========
+    async function loadRecentActivity() {
+        try {
+            const res = await fetch("/get_recent_activity");
+            const data = await res.json();
+            
+            if (data.success) {
+                const activityList = document.querySelector('.activity-list');
+                if (!activityList) return;
+                
+                // Clear existing activities
+                activityList.innerHTML = '';
+                
+                if (data.activities.length === 0) {
+                    // Show empty state
+                    activityList.innerHTML = `
+                        <li class="activity-item" style="justify-content: center; padding: 40px;">
+                            <div style="text-align: center; width: 100%;">
+                                <i class="fas fa-box-open" style="font-size: 48px; color: #6c757d; margin-bottom: 15px;"></i>
+                                <h4 style="color: #6c757d; font-size: 18px; margin-bottom: 8px;">No donations yet</h4>
+                                <p style="color: #6c757d; font-size: 14px;">Click "Donate Medicine" to make your first donation</p>
+                            </div>
+                        </li>
+                    `;
+                } else {
+                    // Add each activity - only show medicines added by donor
+                    data.activities.forEach(activity => {
+                        const activityItem = document.createElement('li');
+                        activityItem.className = 'activity-item';
+                        
+                        // Determine icon based on status
+                        let icon = 'fa-pills';
+                        let iconColor = '#ff7a00';
+                        let statusText = activity.status || 'donated';
+                        
+                        if (activity.status === 'completed' || activity.status === 'collected' || activity.status === 'delivered') {
+                            icon = 'fa-check-circle';
+                            iconColor = '#28a745';
+                            statusText = 'completed';
+                        } else if (activity.status === 'pending' || activity.status === 'available') {
+                            icon = 'fa-clock';
+                            iconColor = '#2c7fb8';
+                            statusText = 'pending';
+                        } else if (activity.status === 'approved') {
+                            icon = 'fa-check';
+                            iconColor = '#ff7a00';
+                            statusText = 'approved';
+                        }
+                        
+                        // Format expiry date
+                        const expiryDate = activity.expiry_date || 'N/A';
+                        
+                        activityItem.innerHTML = `
+                            <div class="activity-icon" style="background-color: ${iconColor}15; color: ${iconColor};">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4 style="text-transform: capitalize; color: #343a40;">${activity.medicine_name || 'Medicine'}</h4>
+                                <p style="margin-bottom: 4px;">
+                                    <span style="font-weight: 500;">${activity.quantity || 0} units</span> • 
+                                    <span style="color: #6c757d;">Expires: ${expiryDate}</span>
+                                </p>
+                                <small style="color: ${iconColor}; font-weight: 500; text-transform: capitalize;">
+                                    <i class="fas fa-circle" style="font-size: 8px; margin-right: 4px;"></i>
+                                    Status: ${statusText}
+                                </small>
+                            </div>
+                            <div class="activity-time" style="color: #6c757d; font-size: 12px;">
+                                <i class="far fa-clock" style="margin-right: 4px;"></i>
+                                ${activity.time_ago || 'Just now'}
+                            </div>
+                        `;
+                        
+                        activityList.appendChild(activityItem);
+                    });
+                }
+            } else {
+                // If API call fails, show empty state
+                showEmptyActivity();
+            }
+        } catch (err) {
+            console.error("Error loading activities:", err);
+            showEmptyActivity();
+        }
+    }
 
-        // Close dropdown if clicked outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-icon')) {
-                var dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('active')) {
-                        openDropdown.classList.remove('active');
+
+    
+    // Function to show empty activity state
+    function showEmptyActivity() {
+        const activityList = document.querySelector('.activity-list');
+        if (activityList) {
+            activityList.innerHTML = `
+                <li class="activity-item" style="justify-content: center; padding: 40px;">
+                    <div style="text-align: center; width: 100%;">
+                        <i class="fas fa-box-open" style="font-size: 48px; color: #6c757d; margin-bottom: 15px;"></i>
+                        <h4 style="color: #6c757d; font-size: 18px; margin-bottom: 8px;">No donations yet</h4>
+                        <p style="color: #6c757d; font-size: 14px;">Click "Donate Medicine" to make your first donation</p>
+                    </div>
+                </li>
+            `;
+        }
+    }
+
+   // ========== SIDEBAR NAVIGATION ==========
+
+
+// ========== LOAD DONATION HISTORY ==========
+async function loadDonationHistory(filter = 'all') {
+    const historyContent = document.getElementById('history-content');
+    const loadingEl = document.getElementById('history-loading');
+    
+    if (!historyContent) return;
+    
+    // Show loading
+    loadingEl.style.display = 'block';
+    historyContent.style.display = 'none';
+    
+    try {
+        const res = await fetch("/get_all_donations");
+        const data = await res.json();
+        
+        if (data.success) {
+            let donations = data.donations;
+            
+            // Apply filter
+            if (filter !== 'all') {
+                donations = donations.filter(d => d.status === filter);
+            }
+            
+            // Rest of the function remains the same...
+            
+            // Sort by date (newest first)
+            donations.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            // Generate HTML
+            let html = '';
+            
+            if (donations.length === 0) {
+                html = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-box-open" style="font-size: 64px; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3 style="color: var(--dark); margin-bottom: 10px;">No donation history found</h3>
+                        <p style="color: var(--gray); margin-bottom: 20px;">You haven't made any donations yet.</p>
+                        <button class="btn btn-primary" id="history-donate-btn">
+                            <i class="fas fa-plus"></i> Donate Medicine Now
+                        </button>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: var(--gray);">
+                            <i class="fas fa-info-circle"></i> 
+                            Showing ${donations.length} donation${donations.length > 1 ? 's' : ''}
+                        </p>
+                    </div>
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: var(--light-gray);">
+                                    <th style="padding: 15px; text-align: left; border-radius: 8px 0 0 8px;">Medicine</th>
+                                    <th style="padding: 15px; text-align: left;">Quantity</th>
+                                    <th style="padding: 15px; text-align: left;">Expiry Date</th>
+                                    <th style="padding: 15px; text-align: left;">Status</th>
+                                    <th style="padding: 15px; text-align: left;">Donated On</th>
+                                    <th style="padding: 15px; text-align: left; border-radius: 0 8px 8px 0;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                donations.forEach(donation => {
+                    // Status badge color
+                    let statusColor = '#ff7a00';
+                    let statusBg = '#fff1e6';
+                    
+                    if (donation.status === 'completed' || donation.status === 'delivered' || donation.status === 'collected') {
+                        statusColor = '#28a745';
+                        statusBg = '#e8f5e9';
+                    } else if (donation.status === 'pending') {
+                        statusColor = '#ffc107';
+                        statusBg = '#fff9e6';
+                    } else if (donation.status === 'approved') {
+                        statusColor = '#2c7fb8';
+                        statusBg = '#e6f3ff';
+                    } else if (donation.status === 'available') {
+                        statusColor = '#6c757d';
+                        statusBg = '#f8f9fa';
                     }
+                    
+                    html += `
+                        <tr style="border-bottom: 1px solid var(--light-gray);">
+                            <td style="padding: 15px; font-weight: 500;">
+                                <i class="fas fa-pills" style="color: var(--primary); margin-right: 8px;"></i>
+                                ${donation.medicine_name}
+                            </td>
+                            <td style="padding: 15px;">${donation.quantity} units</td>
+                            <td style="padding: 15px;">
+                                <i class="far fa-calendar-alt" style="color: var(--gray); margin-right: 5px;"></i>
+                                ${donation.expiry_date || 'N/A'}
+                            </td>
+                            <td style="padding: 15px;">
+                                <span style="background-color: ${statusBg}; color: ${statusColor}; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; text-transform: capitalize;">
+                                    ${donation.status || 'Donated'}
+                                </span>
+                            </td>
+                            <td style="padding: 15px; color: var(--gray);">
+                                <i class="far fa-clock" style="margin-right: 5px;"></i>
+                                ${donation.time_ago}
+                            </td>
+                            
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            historyContent.innerHTML = html;
+            
+            // Add event listener for donate button in empty state
+            const historyDonateBtn = document.getElementById('history-donate-btn');
+            if (historyDonateBtn) {
+                historyDonateBtn.addEventListener('click', function() {
+                    openDonationForm();
+                });
+            }
+            
+            // Add event listeners for view buttons
+            document.querySelectorAll('.view-donation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const donationId = this.dataset.id;
+                    viewDonationDetails(donationId);
+                });
+            });
+            
+        } else {
+            historyContent.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 64px; color: var(--danger); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--dark); margin-bottom: 10px;">Failed to load history</h3>
+                    <p style="color: var(--gray);">Please try again later.</p>
+                </div>
+            `;
+        }
+    } catch (err) {
+        console.error("Error loading donation history:", err);
+        historyContent.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 64px; color: var(--danger); margin-bottom: 20px;"></i>
+                <h3 style="color: var(--dark); margin-bottom: 10px;">Something went wrong</h3>
+                <p style="color: var(--gray);">Please try refreshing the page.</p>
+            </div>
+        `;
+    } finally {
+        // Hide loading
+        loadingEl.style.display = 'none';
+        historyContent.style.display = 'block';
+    }
+}
+
+// ========== VIEW DONATION DETAILS ==========
+function viewDonationDetails(donationId) {
+    // You can implement a modal to show detailed donation information
+    alert(`Viewing details for donation: ${donationId}`);
+    // TODO: Implement detailed view modal
+}
+
+// ========== FILTER DONATION HISTORY ==========
+const historyFilter = document.getElementById('history-filter');
+if (historyFilter) {
+    historyFilter.addEventListener('change', function() {
+        loadDonationHistory(this.value);
+    });
+}
+
+// ========== REFRESH DONATION HISTORY ==========
+const refreshHistoryBtn = document.getElementById('refresh-history-btn');
+if (refreshHistoryBtn) {
+    refreshHistoryBtn.addEventListener('click', function() {
+        const filter = document.getElementById('history-filter')?.value || 'all';
+        loadDonationHistory(filter);
+    });
+}
+
+// ========== UPDATE INITIALIZATION ==========
+// Update the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default stats to 0 immediately
+    setDefaultStats();
+    
+    // Then load actual stats from server
+    loadDonorStats();
+    loadRecentActivity();
+    
+    // Make sure dashboard is showing by default
+    showDashboard();
+});
+    
+    // ========== DONATION FORM SUBMISSION ==========
+    if (donationForm) {
+        donationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            try {
+                const res = await fetch('/submit_donation', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('Donation submitted successfully!');
+                    this.reset();
+                    if (imagePreview) {
+                        imagePreview.classList.remove('active');
+                    }
+                    closeDonationForm();
+                    
+                    // Refresh stats and activity
+                    await loadDonorStats();
+                    await loadRecentActivity();
+                } else {
+                    alert(data.message || 'Failed to submit donation');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error submitting donation. Please try again.');
+            } finally {
+                // Reset button state
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+    
+    // ========== SET EXPIRY DATE MIN ==========
+    const expiryDateInput = document.getElementById('expiryDate');
+    if (expiryDateInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        expiryDateInput.min = `${yyyy}-${mm}-${dd}`;
+    }
+    
+    // ========== CLOSE FORM WITH ESCAPE KEY ==========
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDonationForm();
+        }
+    });
+    
+    // ========== PROFILE DROPDOWN ==========
+    window.toggleDropdown = function() {
+        const menu = document.getElementById("profileMenu");
+        if (menu) {
+            menu.classList.toggle("active");
+        }
+    };
+
+    // Close dropdown if clicked outside
+    window.onclick = function(event) {
+        if (!event.target.matches('.profile-icon')) {
+            const dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('active')) {
+                    openDropdown.classList.remove('active');
                 }
             }
         }
+    };
 
-        // Preview uploaded profile picture
-        document.getElementById("uploadInput").addEventListener("change", function () {
-            const file = this.files[0];
-            if (file) {
-                document.getElementById("previewImage").src = URL.createObjectURL(file);
+    // ========== INITIALIZE ON PAGE LOAD ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set default stats to 0 immediately
+        setDefaultStats();
+        
+        // Then load actual stats from server
+        loadDonorStats();
+        loadRecentActivity();
+    });
+  
+  // ========== DONATION HISTORY MODAL ==========
+const historyModalOverlay = document.getElementById('history-modal-overlay');
+const closeHistoryModalBtn = document.getElementById('close-history-modal');
+const donationHistoryLink = document.getElementById('donation-history-link');
+
+// Open donation history modal
+function openHistoryModal() {
+    if (historyModalOverlay) {
+        historyModalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        loadDonationHistoryModal();
+    }
+}
+
+// Close donation history modal
+function closeHistoryModal() {
+    if (historyModalOverlay) {
+        historyModalOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Event listener for donation history link
+if (donationHistoryLink) {
+    donationHistoryLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        openHistoryModal();
+    });
+}
+
+// Event listener for close button
+if (closeHistoryModalBtn) {
+    closeHistoryModalBtn.addEventListener('click', closeHistoryModal);
+}
+
+// Close modal when clicking outside
+if (historyModalOverlay) {
+    historyModalOverlay.addEventListener('click', function(e) {
+        if (e.target === historyModalOverlay) {
+            closeHistoryModal();
+        }
+    });
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && historyModalOverlay?.classList.contains('active')) {
+        closeHistoryModal();
+    }
+});
+
+// ========== LOAD DONATION HISTORY IN MODAL ==========
+async function loadDonationHistoryModal(filter = 'all') {
+    const historyContent = document.getElementById('history-modal-content');
+    const loadingEl = document.getElementById('history-modal-loading');
+    const filterSelect = document.getElementById('history-filter-modal');
+    
+    if (!historyContent) return;
+    
+    // Show loading
+    loadingEl.style.display = 'block';
+    historyContent.style.display = 'none';
+    
+    try {
+        const res = await fetch("/get_all_donations");
+        const data = await res.json();
+        
+        if (data.success) {
+            let donations = data.donations || [];
+            
+            // Apply filter
+            if (filter !== 'all') {
+                donations = donations.filter(d => d.status === filter);
             }
-        });
-    </script>
+            
+            // Sort by date (newest first)
+            donations.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            // Generate HTML
+            let html = '';
+            
+            if (donations.length === 0) {
+                html = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-box-open" style="font-size: 64px; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3 style="color: var(--dark); margin-bottom: 10px;">No donation history found</h3>
+                        <p style="color: var(--gray); margin-bottom: 20px;">You haven't made any donations yet.</p>
+                        <button class="btn btn-primary" id="history-modal-donate-btn">
+                            <i class="fas fa-plus"></i> Donate Medicine Now
+                        </button>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: var(--gray);">
+                            <i class="fas fa-info-circle"></i> 
+                            Showing ${donations.length} donation${donations.length > 1 ? 's' : ''}
+                        </p>
+                    </div>
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: var(--light-gray);">
+                                    <th style="padding: 12px; text-align: left; border-radius: 8px 0 0 8px;">Medicine</th>
+                                    <th style="padding: 12px; text-align: left;">Quantity</th>
+                                    <th style="padding: 12px; text-align: left;">Expiry Date</th>
+                                    <th style="padding: 12px; text-align: left;">Status</th>
+                                    <th style="padding: 12px; text-align: left;">Donated On</th>
+                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                donations.forEach(donation => {
+                    // Status badge color
+                    let statusColor = '#ff7a00';
+                    let statusBg = '#fff1e6';
+                    
+                    if (donation.status === 'completed' || donation.status === 'delivered' || donation.status === 'collected') {
+                        statusColor = '#28a745';
+                        statusBg = '#e8f5e9';
+                    } else if (donation.status === 'pending') {
+                        statusColor = '#ffc107';
+                        statusBg = '#fff9e6';
+                    } else if (donation.status === 'approved') {
+                        statusColor = '#2c7fb8';
+                        statusBg = '#e6f3ff';
+                    } else if (donation.status === 'available') {
+                        statusColor = '#6c757d';
+                        statusBg = '#f8f9fa';
+                    }
+                    
+                    html += `
+                        <tr style="border-bottom: 1px solid var(--light-gray);">
+                            <td style="padding: 12px; font-weight: 500;">
+                                <i class="fas fa-pills" style="color: var(--primary); margin-right: 8px;"></i>
+                                ${donation.medicine_name || 'Medicine'}
+                            </td>
+                            <td style="padding: 12px;">${donation.quantity || 0} units</td>
+                            <td style="padding: 12px;">
+                                <i class="far fa-calendar-alt" style="color: var(--gray); margin-right: 5px;"></i>
+                                ${donation.expiry_date || 'N/A'}
+                            </td>
+                            <td style="padding: 12px;">
+                                <span style="background-color: ${statusBg}; color: ${statusColor}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; text-transform: capitalize;">
+                                    ${donation.status || 'Donated'}
+                                </span>
+                            </td>
+                            <td style="padding: 12px; color: var(--gray); font-size: 13px;">
+                                <i class="far fa-clock" style="margin-right: 5px;"></i>
+                                ${donation.time_ago || 'Recently'}
+                            </td>
+                            
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            historyContent.innerHTML = html;
+            
+            // Add event listener for donate button in empty state
+            const historyModalDonateBtn = document.getElementById('history-modal-donate-btn');
+            if (historyModalDonateBtn) {
+                historyModalDonateBtn.addEventListener('click', function() {
+                    closeHistoryModal();
+                    openDonationForm();
+                });
+            }
+            
+            // Add event listeners for view buttons
+            document.querySelectorAll('.view-donation-modal-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const donationId = this.dataset.id;
+                    viewDonationDetailsModal(donationId);
+                });
+            });
+            
+        } else {
+            historyContent.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 64px; color: var(--danger); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--dark); margin-bottom: 10px;">Failed to load history</h3>
+                    <p style="color: var(--gray);">Please try again later.</p>
+                </div>
+            `;
+        }
+    } catch (err) {
+        console.error("Error loading donation history:", err);
+        historyContent.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 64px; color: var(--danger); margin-bottom: 20px;"></i>
+                <h3 style="color: var(--dark); margin-bottom: 10px;">Something went wrong</h3>
+                <p style="color: var(--gray);">Please try refreshing the page.</p>
+            </div>
+        `;
+    } finally {
+        // Hide loading
+        loadingEl.style.display = 'none';
+        historyContent.style.display = 'block';
+    }
+}
+
+// ========== VIEW DONATION DETAILS MODAL ==========
+function viewDonationDetailsModal(donationId) {
+    // You can implement a detailed view modal here
+    alert(`Viewing details for donation: ${donationId}`);
+    // TODO: Implement detailed view modal
+}
+
+// ========== FILTER DONATION HISTORY IN MODAL ==========
+const historyFilterModal = document.getElementById('history-filter-modal');
+if (historyFilterModal) {
+    historyFilterModal.addEventListener('change', function() {
+        loadDonationHistoryModal(this.value);
+    });
+}
+
+// ========== REFRESH DONATION HISTORY IN MODAL ==========
+const refreshHistoryModalBtn = document.getElementById('refresh-history-modal-btn');
+if (refreshHistoryModalBtn) {
+    refreshHistoryModalBtn.addEventListener('click', function() {
+        const filter = document.getElementById('history-filter-modal')?.value || 'all';
+        loadDonationHistoryModal(filter);
+    });
+}
+
+// ========== REMOVE OLD SIDEBAR NAVIGATION CODE ==========
+// Remove or comment out the old sidebar navigation code for dashboard
+// since we're not using the history section anymore
+
+</script>
 </body>
 </html>
