@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receiver Dashboard | AarogyaMitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ===== COMPLETE CSS - EXACT SAME AS DONOR DASHBOARD ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #ff7a00;
+            --primary-dark: #e36c00;
+            --secondary: #2c7fb8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR STYLES ===== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 2rem;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .menu li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .menu li a:hover {
+            color: var(--primary);
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            object-fit: cover;
+            border: 2px solid var(--light-gray);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 200px;
+            padding: 10px 0;
+            display: none;
+            z-index: 101;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 12px 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--dark);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--light);
+        }
+
+        .logout-link {
+            color: var(--danger) !important;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 5px;
+            padding-top: 12px;
+        }
+
+        /* ===== DASHBOARD LAYOUT ===== */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 70px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            padding: 30px 20px;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+            border-radius: 0 12px 12px 0;
+            position: fixed;
+            height: calc(100vh - 70px);
+            overflow-y: hidden;
+        }
+
+        .sidebar:hover {
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .user-profile {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 25px;
+        }
+
+        .user-avatar {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #fff;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #fff;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .user-role {
+            font-size: 14px;
+            color: var(--gray);
+            background: var(--light-gray);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .user-role:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Context Menu for Profile Image */
+        .avatar-context-menu {
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 180px;
+            z-index: 1001;
+            display: none;
+            overflow: hidden;
+        }
+
+        .avatar-context-menu.active {
+            display: block;
+        }
+
+        .avatar-context-menu ul {
+            list-style: none;
+            padding: 8px 0;
+            margin: 0;
+        }
+
+        .avatar-context-menu li {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .avatar-context-menu li i {
+            width: 18px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .avatar-context-menu li:hover {
+            background: rgba(255,122,0,0.1);
+            color: var(--primary);
+        }
+
+        .avatar-context-menu li:hover i {
+            color: var(--primary);
+        }
+
+        .avatar-context-menu .delete-option {
+            color: #dc3545;
+            border-top: 1px solid #e9ecef;
+            margin-top: 4px;
+        }
+
+        .avatar-context-menu .delete-option i {
+            color: #dc3545;
+        }
+
+        .avatar-context-menu .delete-option:hover {
+            background: rgba(220,53,69,0.1);
+            color: #dc3545;
+        }
+
+        .avatar-context-menu .delete-option:hover i {
+            color: #dc3545;
+        }
+
+        .context-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: 1000;
+            display: none;
+        }
+
+        .context-menu-overlay.active {
+            display: block;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 18px;
+            text-decoration: none;
+            color: var(--dark);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: linear-gradient(135deg, rgba(255,122,0,0.08) 0%, rgba(255,122,0,0.12) 100%);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-menu a:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 35px 35px;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark);
+            position: relative;
+        }
+
+        .dashboard-header h2:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,122,0,0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-gray);
+            border-color: var(--dark);
+            color: var(--dark);
+        }
+
+        /* Stats Cards */
+        .stats-cards {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 25px;
+            margin-bottom: 35px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+        }
+
+        .stats-cards::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .stats-cards::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .stats-cards::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .stats-cards::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            min-width: 260px;
+            flex: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #fff;
+            transition: all 0.5s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: rotateY(360deg);
+        }
+
+        .stat-icon.orange { 
+            background: linear-gradient(135deg, #ff7a00, #ff9f4b);
+        }
+        .stat-icon.green { 
+            background: linear-gradient(135deg, #28a745, #5cd67c);
+        }
+        .stat-icon.blue { 
+            background: linear-gradient(135deg, #2c7fb8, #6ab0e6);
+        }
+        .stat-icon.teal { 
+            background: linear-gradient(135deg, #1abc9c, #6dd5b8);
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-info h3 {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+
+        .stat-info p {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-info p {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Dashboard Sections */
+        .dashboard-section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px 30px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-section:hover {
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .section-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .view-all:hover {
+            color: var(--primary-dark);
+            transform: translateX(5px);
+        }
+
+        /* Medicines Grid */
+        .medicines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 10px;
+        }
+
+        .medicine-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicine-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: transparent;
+        }
+
+        .medicine-card:hover:before {
+            opacity: 1;
+        }
+
+        .medicine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .medicine-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--dark);
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .badge-available {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+
+        .badge-expiring-soon {
+            background: linear-gradient(135deg, #fff3cd, #ffe8a1);
+            color: #856404;
+        }
+
+        .medicine-detail {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .medicine-quantity {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .medicine-location {
+            color: var(--gray);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .medicine-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .donor-badge {
+            background: var(--light-gray);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--dark);
+        }
+
+        /* Activity List */
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background-color: rgba(255,122,0,0.03);
+            padding-left: 15px;
+            border-radius: 12px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(255,122,0,0.1) 0%, rgba(255,122,0,0.15) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover .activity-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .activity-details h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .activity-details p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .activity-time {
+            margin-left: auto;
+            font-size: 13px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .badge-pending {
+            background: linear-gradient(135deg, #fff3cd, #ffe8a1);
+            color: #856404;
+        }
+
+        .badge-approved {
+            background: linear-gradient(135deg, #cce5ff, #b8daff);
+            color: #004085;
+        }
+
+        .badge-collected {
+            background: linear-gradient(135deg, #e2e3e5, #d6d8d9);
+            color: #383d41;
+        }
+
+        /* Request Overlay */
+        .request-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .request-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .request-form-container {
+            background: #fff;
+            width: 100%;
+            max-width: 950px;
+            border-radius: 30px 30px 0 0;
+            padding: 35px 40px;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+        }
+
+        .request-overlay.active .request-form-container {
+            transform: translateY(0);
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .form-header h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: var(--dark);
+            background: var(--light-gray);
+            transform: rotate(90deg);
+        }
+
+        .request-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
+            transform: scale(1.02);
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--light-gray);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(255,122,0,0.03);
+            transform: scale(1.02);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background-color: rgba(255,122,0,0.08);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--gray);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: translateY(-5px);
+            color: var(--primary);
+        }
+
+        .upload-text h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.2);
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,122,0,0.3);
+        }
+
+        .preview-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .preview-image:hover {
+            transform: scale(1.02);
+        }
+
+        .remove-file {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--danger) 0%, #ff6b6b 100%);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .remove-file:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .file-preview.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner i {
+            font-size: 40px;
+            color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background: #fff;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(-30px);
+            transition: transform 0.4s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 28px;
+            border-bottom: 2px solid var(--light-gray);
+            background: linear-gradient(135deg, #fff8f0, #fff);
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h3 i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 36px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.3s;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--dark);
+            background: var(--light-gray);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 28px;
+            overflow-y: auto;
+            max-height: calc(85vh - 90px);
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .request-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .request-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: transparent;
+        }
+
+        .request-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .request-card:hover:before {
+            opacity: 1;
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .request-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .request-dosage {
+            font-size: 14px;
+            color: var(--gray);
+            margin-left: 8px;
+        }
+
+        .request-status {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #fff3cd, #ffe8a1);
+            color: #856404;
+        }
+
+        .status-approved {
+            background: linear-gradient(135deg, #cce5ff, #b8daff);
+            color: #004085;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+
+        .request-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .request-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .detail-value i {
+            color: var(--primary);
+            margin-right: 6px;
+        }
+
+        .request-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .request-time {
+            font-size: 13px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #ff6b6b);
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220,53,69,0.3);
+        }
+
+        @media(max-width: 992px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+                overflow-y: visible;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .request-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 768px) {
+            .main-content {
+                padding: 25px 20px;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .request-form-container {
+                padding: 25px 20px;
+            }
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+            .menu {
+                gap: 0.8rem;
+            }
+            .logo-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media(max-width: 576px) {
+            .menu li:not(:last-child) {
+                display: none;
+            }
+            .btn {
+                padding: 10px 20px;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-section {
+            animation: slideIn 0.5s ease;
+        }
+
+        .stat-card {
+            animation: slideIn 0.5s ease;
+        }
+
+        #imageInput { 
+            display: none; 
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication check -->
+    {% if not session.user or session.user.user_type != 'receiver' %}
+    <script>
+        window.location.href = "{{ url_for('login_page') }}";
+    </script>
+    {% endif %}
+
+    <!-- NAVBAR - DYNAMIC WITH USER DATA -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/static/img/logo.png" alt="AarogyaMitra Logo" onerror="this.src='https://via.placeholder.com/40x40?text=A';">
+            <span class="logo-text">AarogyaMitra</span>
+        </div>
+
+        <ul class="menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#medicines">Available Medicines</a></li>
+            <li><a href="/#contact">Contact</a></li>
+
+            <!-- Profile dropdown with dynamic user data -->
+            <li style="position: relative;">
+                <img src="{% if user and user.profile_image %}/static/profile_images/{{ user.profile_image }}?t={{ range(1, 100000) | random }}{% else %}https://cdn-icons-png.flaticon.com/512/847/847969.png{% endif %}"  
+                     alt="Profile" 
+                     class="profile-icon" 
+                     id="navbarProfileIcon"
+                     onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png'"
+                     onclick="toggleDropdown()">
+
+                <div class="dropdown-menu" id="profileMenu">
+                    <div class="dropdown-header" id="dropdown-username">{{ user.username }}</div>
+                    <a href="/receiver/dashboard">My Profile</a>
+                    <a href="/logout" class="logout-link">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- DASHBOARD CONTAINER -->
+    <div class="dashboard-container">
+        <!-- SIDEBAR - DYNAMIC WITH USER DATA & PROFILE IMAGE FEATURE -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar" id="avatarBox">
+                    <img id="avatarPreview" 
+                         src="{% if user and user.profile_image %}/static/profile_images/{{ user.profile_image }}?t={{ range(1, 100000) | random }}{% else %}https://cdn-icons-png.flaticon.com/512/847/847969.png{% endif %}" 
+                         style="width:100%; height:100%; border-radius:50%; object-fit:cover;"
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png'">
+                    <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+                    
+                    <!-- Right-click Context Menu for Profile Image (EXACTLY LIKE DONOR) -->
+                    <div class="avatar-context-menu" id="avatarContextMenu">
+                        <ul>
+                            <li id="changePhotoOption"><i class="fas fa-camera"></i> Change Photo</li>
+                            <li id="deletePhotoOption" class="delete-option"><i class="fas fa-trash"></i> Delete Photo</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 class="user-name" id="sidebar-username">{{ user.username }}</h3>
+                <span class="user-role" id="sidebar-userrole">Medicine Receiver</span>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" id="dashboard-link"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" id="sidebar-request-btn"><i class="fas fa-prescription"></i> Request Medicine</a></li>
+                <li><a href="#" id="my-requests-link"><i class="fas fa-clipboard-list"></i> My Requests</a></li>
+                <li><a href="#" id="pickup-schedule-link"><i class="fas fa-calendar-check"></i> Pickup Schedule</a></li>
+            </ul>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h2>Receiver Dashboard</h2>
+                <button class="btn btn-primary" id="request-btn">
+                    <i class="fas fa-plus-circle"></i> Request Medicine
+                </button>
+            </div>
+
+            <!-- STATS CARDS - DYNAMIC DATA -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-prescription"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="active-requests">0</h3>
+                        <p>Active Requests</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="ready-pickup">0</h3>
+                        <p>Ready for Pickup</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="upcoming-pickups">0</h3>
+                        <p>Upcoming Pickups</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon teal">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="medicines-received">0</h3>
+                        <p>Medicines Received</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEARBY AVAILABLE MEDICINES SECTION - DYNAMIC FROM DONORS -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+                        Nearby Available Medicines
+                    </h3>
+                    <a href="#" class="view-all" id="view-all-medicines">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div id="medicines-loading" class="loading-spinner" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p style="margin-top: 16px;">Loading available medicines from donors...</p>
+                </div>
+                
+                <div class="medicines-grid" id="medicines-grid">
+                    <!-- Medicines will be loaded dynamically from donor donations -->
+                </div>
+            </div>
+
+            <!-- RECENT REQUESTS & ACTIVITY -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-history" style="color: var(--primary);"></i>
+                        Recent Requests & Updates
+                    </h3>
+                    <a href="#" class="view-all" id="view-all-requests">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div id="activity-loading" class="loading-spinner" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p style="margin-top: 16px;">Loading your recent requests...</p>
+                </div>
+                
+                <ul class="activity-list" id="activity-list">
+                    <!-- Activity will be loaded dynamically -->
+                </ul>
+            </div>
+
+            <!-- HOW TO RECEIVE MEDICINE GUIDE -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-question-circle" style="color: var(--primary);"></i>
+                        How to Receive Medicine
+                    </h3>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(255,122,0,0.1) 0%, rgba(255,122,0,0.15) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary); font-size: 28px;">
+                            <i class="fas fa-prescription"></i>
+                        </div>
+                        <h4 style="margin-bottom: 12px; font-size: 18px; font-weight: 600;">Submit Request</h4>
+                        <p style="color: var(--gray); font-size: 14px; line-height: 1.6;">Browse medicines donated by generous donors and submit your request</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(255,122,0,0.1) 0%, rgba(255,122,0,0.15) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary); font-size: 28px;">
+                            <i class="fas fa-file-prescription"></i>
+                        </div>
+                        <h4 style="margin-bottom: 12px; font-size: 18px; font-weight: 600;">Upload Prescription</h4>
+                        <p style="color: var(--gray); font-size: 14px; line-height: 1.6;">Provide valid prescription for verification by our medical team</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(255,122,0,0.1) 0%, rgba(255,122,0,0.15) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary); font-size: 28px;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4 style="margin-bottom: 12px; font-size: 18px; font-weight: 600;">Wait for Approval</h4>
+                        <p style="color: var(--gray); font-size: 14px; line-height: 1.6;">Donor confirms availability and schedules pickup time</p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(255,122,0,0.1) 0%, rgba(255,122,0,0.15) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary); font-size: 28px;">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h4 style="margin-bottom: 12px; font-size: 18px; font-weight: 600;">Collect Medicine</h4>
+                        <p style="color: var(--gray); font-size: 14px; line-height: 1.6;">Pick up from designated location or coordinate with donor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUEST FORM OVERLAY -->
+    <div class="request-overlay" id="request-overlay">
+        <div class="request-form-container">
+            <div class="form-header">
+                <h3>Request Medicine</h3>
+                <button class="close-btn" id="close-form">&times;</button>
+            </div>
+            
+            <form class="request-form" id="request-form">
+                <div class="form-group full-width">
+                    <label>Upload Prescription <span class="required">*</span></label>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-prescription"></i>
+                        </div>
+                        <div class="upload-text">
+                            <h4>Upload Prescription / Doctor's Note</h4>
+                            <p style="font-size: 14px; color: var(--gray);">Drag & drop or click to upload (JPG, PNG, PDF) - Max 5MB</p>
+                        </div>
+                        <div class="browse-btn" id="browseBtn">
+                            <i class="fas fa-cloud-upload-alt"></i> Browse Files
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;">
+                    </div>
+                    
+                    <div class="file-preview" id="filePreview">
+                        <div class="preview-container">
+                            <img src="" alt="Prescription Preview" class="preview-image" id="previewImage">
+                            <div class="remove-file" id="removeFile">&times;</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Medicine Name <span class="required">*</span></label>
+                    <input type="text" id="medicineName" class="form-control" placeholder="e.g., Amoxicillin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dosage / Strength <span class="required">*</span></label>
+                    <input type="text" id="dosage" class="form-control" placeholder="e.g., 500mg" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Quantity Needed <span class="required">*</span></label>
+                    <input type="number" id="quantity" class="form-control" placeholder="e.g., 30" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Urgency Level <span class="required">*</span></label>
+                    <select id="urgency" class="form-control" required>
+                        <option value="" disabled selected>Select urgency</option>
+                        <option value="immediate">🔴 Immediate (within 24h)</option>
+                        <option value="urgent">🟠 Urgent (within 3 days)</option>
+                        <option value="normal">🟡 Normal (within a week)</option>
+                        <option value="low">🟢 Low (flexible)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Preferred Pickup Location <span class="required">*</span></label>
+                    <input type="text" id="location" class="form-control" placeholder="Your preferred location/area" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Medicine Condition</label>
+                    <select id="condition" class="form-control">
+                        <option value="any">✅ Any acceptable condition</option>
+                        <option value="sealed">📦 Sealed/Unopened only</option>
+                        <option value="good">👍 Good condition</option>
+                    </select>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Additional Notes / Medical Condition</label>
+                    <textarea id="additionalNotes" class="form-control" placeholder="Please share any relevant medical information or special instructions..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancel-btn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submit-request-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        "use strict";
+
+        // ============================================
+        // BACKEND INTEGRATION - RECEIVER DASHBOARD
+        // ============================================
+
+        // Current user info - dynamically populated from backend
+        const CURRENT_USER = {
+            username: {{ user.username|tojson|safe }},
+            user_type: {{ user.user_type|tojson|safe }},
+            user_id: {% if user._id %}{{ user._id|string|tojson|safe }}{% else %}null{% endif %},
+            profile_image: {% if user.profile_image %}{{ user.profile_image|tojson|safe }}{% else %}null{% endif %}
+        };
+
+        const API_BASE = '';
+
+        // ========== PROFILE IMAGE UPLOAD WITH RIGHT-CLICK DELETE (EXACTLY LIKE DONOR) ==========
+        const avatarBox = document.getElementById('avatarBox');
+        const avatarInput = document.getElementById('avatarInput');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const navbarProfileIcon = document.getElementById('navbarProfileIcon');
+        const avatarContextMenu = document.getElementById('avatarContextMenu');
+        const changePhotoOption = document.getElementById('changePhotoOption');
+        const deletePhotoOption = document.getElementById('deletePhotoOption');
+
+        // Create overlay for closing context menu
+        const contextMenuOverlay = document.createElement('div');
+        contextMenuOverlay.className = 'context-menu-overlay';
+        document.body.appendChild(contextMenuOverlay);
+
+        // ===== RIGHT CLICK ON AVATAR TO SHOW CONTEXT MENU =====
+        if (avatarBox) {
+            avatarBox.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                avatarContextMenu.classList.add('active');
+                contextMenuOverlay.classList.add('active');
+            });
+        }
+
+        // ===== CLOSE CONTEXT MENU WHEN CLICKING OUTSIDE =====
+        contextMenuOverlay.addEventListener('click', function() {
+            avatarContextMenu.classList.remove('active');
+            contextMenuOverlay.classList.remove('active');
+        });
+
+        // ===== CLOSE CONTEXT MENU WHEN CLICKING ESCAPE =====
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                avatarContextMenu.classList.remove('active');
+                contextMenuOverlay.classList.remove('active');
+            }
+        });
+
+        // ===== CHANGE PHOTO OPTION =====
+        if (changePhotoOption) {
+            changePhotoOption.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                avatarContextMenu.classList.remove('active');
+                contextMenuOverlay.classList.remove('active');
+                avatarInput.click();
+            });
+        }
+
+        // ===== DELETE PHOTO OPTION =====
+        if (deletePhotoOption) {
+            deletePhotoOption.addEventListener('click', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                avatarContextMenu.classList.remove('active');
+                contextMenuOverlay.classList.remove('active');
+                
+                const currentSrc = avatarPreview.src;
+                if (currentSrc.includes('cdn-icons-png') || currentSrc.includes('default') || currentSrc.includes('847/847969')) {
+                    alert('No profile image to delete');
+                    return;
+                }
+                
+                if (confirm('Are you sure you want to delete your profile photo?')) {
+                    await deleteProfileImage();
+                }
+            });
+        }
+
+        // ===== DELETE PROFILE IMAGE FUNCTION =====
+        async function deleteProfileImage() {
+            try {
+                console.log('Deleting profile image...');
+                const response = await fetch('/receiver/delete_profile_image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                console.log('Delete result:', result);
+                
+                if (result.success) {
+                    const timestamp = new Date().getTime();
+                    const defaultImage = result.default_image + '?t=' + timestamp;
+                    
+                    avatarPreview.src = defaultImage;
+                    if (navbarProfileIcon) navbarProfileIcon.src = defaultImage;
+                    
+                    CURRENT_USER.profile_image = null;
+                    
+                    alert('Profile image deleted successfully!');
+                    console.log('✅ Profile image deleted');
+                } else {
+                    alert(result.message || 'Failed to delete profile image');
+                }
+            } catch (error) {
+                console.error('❌ Error deleting profile image:', error);
+                alert('Error deleting image. Please try again.');
+            }
+        }
+
+        // ===== CLICK ON AVATAR TO UPLOAD NEW IMAGE =====
+        if (avatarBox) {
+            avatarBox.addEventListener('click', function(e) {
+                // Don't trigger on right click
+                if (e.button === 2) return;
+                avatarInput.click();
+            });
+        }
+
+        // ===== FILE INPUT CHANGE HANDLER =====
+        if (avatarInput) {
+            avatarInput.addEventListener('change', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    
+                    // Validate file size
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File too large! Max size is 5MB.');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Validate file type
+                    if (!file.type.match('image.*')) {
+                        alert('Please select an image file (PNG, JPG, JPEG, GIF)');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const originalSrc = avatarPreview.src;
+                    const loadingGif = 'https://i.gifer.com/ZZ5H.gif';
+                    avatarPreview.src = loadingGif;
+                    if (navbarProfileIcon) navbarProfileIcon.src = loadingGif;
+                    
+                    // Create FormData
+                    const formData = new FormData();
+                    formData.append('profileImage', file);
+                    
+                    try {
+                        console.log('Uploading profile image...');
+                        const response = await fetch('/receiver/upload_profile', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        console.log('Upload result:', result);
+                        
+                        if (result.success) {
+                            const timestamp = new Date().getTime();
+                            const newImageUrl = `/static/profile_images/${result.filename}?t=${timestamp}`;
+                            
+                            avatarPreview.src = newImageUrl;
+                            if (navbarProfileIcon) navbarProfileIcon.src = newImageUrl;
+                            
+                            CURRENT_USER.profile_image = result.filename;
+                            
+                            alert('Profile image updated successfully!');
+                            console.log('✅ Profile image uploaded successfully:', result.filename);
+                        } else {
+                            alert(result.message || 'Failed to upload profile image');
+                            // Revert to original
+                            avatarPreview.src = originalSrc;
+                            if (navbarProfileIcon) navbarProfileIcon.src = originalSrc;
+                        }
+                    } catch (error) {
+                        console.error('❌ Error uploading profile image:', error);
+                        alert('Error uploading image. Please try again.');
+                        // Revert to original
+                        avatarPreview.src = originalSrc;
+                        if (navbarProfileIcon) navbarProfileIcon.src = originalSrc;
+                    } finally {
+                        // Clear the input
+                        this.value = '';
+                    }
+                }
+            });
+        }
+
+        // ===== FORCE RELOAD IMAGES ON PAGE LOAD =====
+        window.addEventListener('load', function() {
+            const timestamp = new Date().getTime();
+            
+            if (avatarPreview && avatarPreview.src.includes('/static/profile_images/')) {
+                const baseUrl = avatarPreview.src.split('?')[0];
+                if (baseUrl && !baseUrl.includes('cdn-icons-png')) {
+                    avatarPreview.src = baseUrl + '?t=' + timestamp;
+                }
+            }
+            
+            if (navbarProfileIcon && navbarProfileIcon.src.includes('/static/profile_images/')) {
+                const baseUrl = navbarProfileIcon.src.split('?')[0];
+                if (baseUrl && !baseUrl.includes('cdn-icons-png')) {
+                    navbarProfileIcon.src = baseUrl + '?t=' + timestamp;
+                }
+            }
+        });
+
+        // ===== ERROR HANDLERS FOR IMAGES =====
+        if (avatarPreview) {
+            avatarPreview.addEventListener('error', function() {
+                console.log('Avatar image failed to load, using default');
+                this.src = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+            });
+        }
+
+        if (navbarProfileIcon) {
+            navbarProfileIcon.addEventListener('error', function() {
+                console.log('Navbar profile image failed to load, using default');
+                this.src = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+            });
+        }
+
+        // ========== LOAD RECEIVER STATS ==========
+        async function loadReceiverStats() {
+            try {
+                const response = await fetch('/get_receiver_stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('active-requests').innerText = data.stats.pending || 0;
+                    document.getElementById('ready-pickup').innerText = data.stats.approved || 0;
+                    document.getElementById('medicines-received').innerText = data.stats.completed || 0;
+                    
+                    const upcoming = (data.stats.approved || 0) + (data.stats.pending_pickup || 0);
+                    document.getElementById('upcoming-pickups').innerText = upcoming;
+                }
+            } catch (error) {
+                console.error('Error loading receiver stats:', error);
+                document.getElementById('active-requests').innerText = '0';
+                document.getElementById('ready-pickup').innerText = '0';
+                document.getElementById('upcoming-pickups').innerText = '0';
+                document.getElementById('medicines-received').innerText = '0';
+            }
+        }
+
+        // ========== LOAD AVAILABLE MEDICINES FROM DONORS ==========
+        async function loadAvailableMedicines() {
+            const medicinesGrid = document.getElementById('medicines-grid');
+            const loadingEl = document.getElementById('medicines-loading');
+            
+            if (!medicinesGrid) return;
+
+            loadingEl.style.display = 'block';
+            medicinesGrid.style.display = 'none';
+
+            try {
+                const response = await fetch('/get_available_medicines');
+                const data = await response.json();
+
+                if (data.success) {
+                    const medicines = data.medicines || [];
+                    
+                    if (medicines.length === 0) {
+                        medicinesGrid.innerHTML = `
+                            <div class="empty-state" style="grid-column: 1 / -1;">
+                                <i class="fas fa-box-open"></i>
+                                <h3 style="color: var(--dark); margin-bottom: 10px;">No medicines available yet</h3>
+                                <p style="color: var(--gray);">Donors haven't added any medicines. Check back later!</p>
+                            </div>
+                        `;
+                    } else {
+                        // Show first 4 medicines
+                        const displayMedicines = medicines.slice(0, 4);
+                        
+                        let html = '';
+                        displayMedicines.forEach(medicine => {
+                            const badgeClass = medicine.expiry_status === 'expiring_soon' ? 'badge-expiring-soon' : 'badge-available';
+                            const badgeText = medicine.expiry_status === 'expiring_soon' ? 'Expiring Soon' : 'Available';
+                            const expiryDisplay = medicine.days_until_expiry ? 
+                                `${medicine.expiry_date} (${medicine.days_until_expiry} days left)` : 
+                                medicine.expiry_date || 'N/A';
+                            
+                            html += `
+                                <div class="medicine-card" data-medicine-id="${medicine.id}">
+                                    <div class="medicine-header">
+                                        <span class="medicine-title">${medicine.medicine_name}</span>
+                                        <span class="badge ${badgeClass}">${badgeText}</span>
+                                    </div>
+                                    <div style="font-size: 13px; color: var(--gray); margin-bottom: 8px;">
+                                        ${medicine.manufacturer} · ${medicine.category || 'Medicine'}
+                                    </div>
+                                    <div class="medicine-detail">
+                                        <span><i class="fas fa-calendar-alt"></i> Exp: ${expiryDisplay}</span>
+                                        <span class="medicine-quantity">Qty: ${medicine.quantity} units</span>
+                                    </div>
+                                    <div class="medicine-location">
+                                        <i class="fas fa-user-circle"></i> Donated by: ${medicine.donor_username}
+                                    </div>
+                                    <div class="medicine-footer">
+                                        <span class="donor-badge">
+                                            <i class="fas fa-medal"></i> Donor
+                                        </span>
+                                        <button class="btn btn-primary request-medicine-btn" 
+                                                data-medicine-name="${medicine.medicine_name}"
+                                                style="padding: 8px 20px; font-size: 13px;">
+                                            <i class="fas fa-hand-holding-heart"></i> Request
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        medicinesGrid.innerHTML = html;
+                        
+                        // Add event listeners to request buttons
+                        document.querySelectorAll('.request-medicine-btn').forEach(btn => {
+                            btn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                const medicineName = this.dataset.medicineName;
+                                openRequestForm(medicineName);
+                            });
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading medicines:', error);
+                medicinesGrid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                        <h3 style="color: var(--dark); margin-bottom: 10px;">Failed to load medicines</h3>
+                        <p style="color: var(--gray);">Please try refreshing the page.</p>
+                    </div>
+                `;
+            } finally {
+                loadingEl.style.display = 'none';
+                medicinesGrid.style.display = 'grid';
+            }
+        }
+
+        // ========== MY REQUESTS MODAL ==========
+        // Create modal HTML and add to page
+        const requestsModalHTML = `
+        <div class="modal-overlay" id="requests-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3>
+                        <i class="fas fa-clipboard-list" style="margin-right: 12px; color: var(--primary);"></i>
+                        My Medicine Requests
+                    </h3>
+                    <button class="modal-close-btn" id="close-requests-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                        <select id="requests-filter-modal" class="form-control" style="width: auto; padding: 8px 18px; border-radius:40px;">
+                            <option value="all">All Requests</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="approved">✅ Approved</option>
+                            <option value="completed">🎉 Completed</option>
+                            <option value="cancelled">❌ Cancelled</option>
+                        </select>
+                        <button class="btn btn-outline" id="refresh-requests-modal-btn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    
+                    <div id="requests-modal-loading" class="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p style="margin-top: 16px;">Loading your requests...</p>
+                    </div>
+                    
+                    <div id="requests-modal-content">
+                        <!-- Requests will be loaded dynamically here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', requestsModalHTML);
+
+        // ========== MY REQUESTS MODAL FUNCTIONALITY ==========
+        const requestsModalOverlay = document.getElementById('requests-modal-overlay');
+        const closeRequestsModalBtn = document.getElementById('close-requests-modal');
+        const myRequestsLink = document.getElementById('my-requests-link');
+        const refreshRequestsBtn = document.getElementById('refresh-requests-modal-btn');
+        const requestsFilter = document.getElementById('requests-filter-modal');
+
+        // Function to open requests modal
+        function openRequestsModal() {
+            if (requestsModalOverlay) {
+                requestsModalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                loadAllRequests('all');
+            }
+        }
+
+        // Function to close requests modal
+        function closeRequestsModal() {
+            if (requestsModalOverlay) {
+                requestsModalOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Function to load all requests with filter
+        async function loadAllRequests(filter = 'all') {
+            const modalContent = document.getElementById('requests-modal-content');
+            const loadingEl = document.getElementById('requests-modal-loading');
+            
+            if (!modalContent) return;
+
+            loadingEl.style.display = 'block';
+            modalContent.style.display = 'none';
+
+            try {
+                const response = await fetch('/get_receiver_requests');
+                const data = await response.json();
+
+                if (data.success) {
+                    let requests = data.requests || [];
+
+                    if (filter !== 'all') {
+                        requests = requests.filter(req => req.status === filter);
+                    }
+
+                    let html = '';
+
+                    if (requests.length === 0) {
+                        html = `
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h3>No Requests Found</h3>
+                                <p>${filter === 'all' ? 'You haven\'t made any medicine requests yet.' : `No ${filter} requests found.`}</p>
+                                <button class="btn btn-primary" id="empty-state-request-btn">
+                                    <i class="fas fa-plus-circle"></i> Request Medicine
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        html = `
+                            <div style="margin-bottom: 20px;">
+                                <p style="color: var(--gray);">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Showing ${requests.length} request${requests.length > 1 ? 's' : ''}
+                                </p>
+                            </div>
+                        `;
+                        
+                        requests.forEach(request => {
+                            let statusClass = '';
+                            let statusIcon = '';
+                            
+                            switch(request.status) {
+                                case 'pending':
+                                    statusClass = 'status-pending';
+                                    statusIcon = '⏳';
+                                    break;
+                                case 'approved':
+                                    statusClass = 'status-approved';
+                                    statusIcon = '✅';
+                                    break;
+                                case 'completed':
+                                    statusClass = 'status-completed';
+                                    statusIcon = '🎉';
+                                    break;
+                                case 'cancelled':
+                                    statusClass = 'status-cancelled';
+                                    statusIcon = '❌';
+                                    break;
+                                default:
+                                    statusClass = 'status-pending';
+                                    statusIcon = '⏳';
+                            }
+                            
+                            let urgencyIcon = '';
+                            switch(request.urgency) {
+                                case 'immediate':
+                                    urgencyIcon = '🔴';
+                                    break;
+                                case 'urgent':
+                                    urgencyIcon = '🟠';
+                                    break;
+                                case 'normal':
+                                    urgencyIcon = '🟡';
+                                    break;
+                                case 'low':
+                                    urgencyIcon = '🟢';
+                                    break;
+                                default:
+                                    urgencyIcon = '⚪';
+                            }
+                            
+                            html += `
+                                <div class="request-card" data-request-id="${request.id}">
+                                    <div class="request-header">
+                                        <div>
+                                            <span class="request-title">${request.medicine_name}</span>
+                                            <span class="request-dosage">${request.dosage || ''}</span>
+                                        </div>
+                                        <span class="request-status ${statusClass}">${statusIcon} ${request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span>
+                                    </div>
+                                    
+                                    <div class="request-details-grid">
+                                        <div class="request-detail-item">
+                                            <span class="detail-label">Quantity</span>
+                                            <span class="detail-value"><i class="fas fa-capsules"></i> ${request.quantity} units</span>
+                                        </div>
+                                        <div class="request-detail-item">
+                                            <span class="detail-label">Urgency</span>
+                                            <span class="detail-value">${urgencyIcon} ${request.urgency.charAt(0).toUpperCase() + request.urgency.slice(1)}</span>
+                                        </div>
+                                        <div class="request-detail-item">
+                                            <span class="detail-label">Pickup Location</span>
+                                            <span class="detail-value"><i class="fas fa-location-dot"></i> ${request.preferred_location || 'Not specified'}</span>
+                                        </div>
+                                        <div class="request-detail-item">
+                                            <span class="detail-label">Donor</span>
+                                            <span class="detail-value"><i class="fas fa-user-circle"></i> ${request.donor_username || 'Pending'}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    ${request.additional_notes ? `
+                                    <div style="margin: 10px 0; padding: 10px; background: #fff3e0; border-radius: 8px;">
+                                        <span style="font-size: 12px; color: var(--gray);">📝 Notes:</span>
+                                        <p style="margin-top: 5px; font-size: 14px;">${request.additional_notes}</p>
+                                    </div>
+                                    ` : ''}
+                                    
+                                    <div class="request-footer">
+                                        <span class="request-time">
+                                            <i class="far fa-clock"></i> Requested ${request.time_ago}
+                                        </span>
+                                        <div class="request-actions">
+                                            ${request.status === 'pending' ? `
+                                            <button class="btn btn-sm btn-danger cancel-request-btn" data-request-id="${request.id}">
+                                                <i class="fas fa-times-circle"></i> Cancel Request
+                                            </button>
+                                            ` : ''}
+                                            ${request.status === 'approved' ? `
+                                            <button class="btn btn-sm btn-primary pickup-details-btn" data-request-id="${request.id}">
+                                                <i class="fas fa-truck"></i> Pickup Details
+                                            </button>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    modalContent.innerHTML = html;
+
+                    const emptyStateBtn = document.getElementById('empty-state-request-btn');
+                    if (emptyStateBtn) {
+                        emptyStateBtn.addEventListener('click', function() {
+                            closeRequestsModal();
+                            openRequestForm();
+                        });
+                    }
+
+                    document.querySelectorAll('.cancel-request-btn').forEach(btn => {
+                        btn.addEventListener('click', async function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const requestId = this.dataset.requestId;
+                            await cancelMedicineRequest(requestId);
+                        });
+                    });
+
+                    document.querySelectorAll('.pickup-details-btn').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('📦 Pickup Details:\n\nPlease coordinate with the donor for pickup location and time.\n\nDonor contact information will be shared soon.');
+                        });
+                    });
+
+                } else {
+                    throw new Error(data.message || 'Failed to load requests');
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                modalContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                        <h3 style="color: var(--dark);">Failed to Load Requests</h3>
+                        <p style="color: var(--gray);">${error.message || 'Please try again later.'}</p>
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            <i class="fas fa-sync-alt"></i> Refresh Page
+                        </button>
+                    </div>
+                `;
+            } finally {
+                loadingEl.style.display = 'none';
+                modalContent.style.display = 'block';
+            }
+        }
+
+        // ========== CANCEL REQUEST FUNCTION ==========
+        async function cancelMedicineRequest(requestId) {
+            if (!confirm('Are you sure you want to cancel this request?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/cancel_request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ request_id: requestId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Request cancelled successfully!');
+                    
+                    const currentFilter = requestsFilter ? requestsFilter.value : 'all';
+                    await loadAllRequests(currentFilter);
+                    await loadRecentRequests();
+                    await loadReceiverStats();
+                } else {
+                    alert(result.message || 'Failed to cancel request');
+                }
+            } catch (error) {
+                console.error('Error cancelling request:', error);
+                alert('Error cancelling request. Please try again.');
+            }
+        }
+
+        // ========== EVENT LISTENERS ==========
+        if (myRequestsLink) {
+            myRequestsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openRequestsModal();
+            });
+        }
+
+        if (closeRequestsModalBtn) {
+            closeRequestsModalBtn.addEventListener('click', closeRequestsModal);
+        }
+
+        if (requestsModalOverlay) {
+            requestsModalOverlay.addEventListener('click', function(e) {
+                if (e.target === requestsModalOverlay) {
+                    closeRequestsModal();
+                }
+            });
+        }
+
+        if (refreshRequestsBtn) {
+            refreshRequestsBtn.addEventListener('click', function() {
+                const filter = requestsFilter ? requestsFilter.value : 'all';
+                loadAllRequests(filter);
+            });
+        }
+
+        if (requestsFilter) {
+            requestsFilter.addEventListener('change', function() {
+                loadAllRequests(this.value);
+            });
+        }
+
+        const viewAllRequests = document.getElementById('view-all-requests');
+        if (viewAllRequests) {
+            viewAllRequests.addEventListener('click', function(e) {
+                e.preventDefault();
+                openRequestsModal();
+            });
+        }
+
+        // ========== LOAD RECENT REQUESTS ==========
+        async function loadRecentRequests() {
+            const activityList = document.getElementById('activity-list');
+            const loadingEl = document.getElementById('activity-loading');
+            
+            if (!activityList) return;
+
+            loadingEl.style.display = 'block';
+            activityList.style.display = 'none';
+
+            try {
+                const response = await fetch('/get_receiver_requests');
+                const data = await response.json();
+
+                if (data.success) {
+                    const requests = data.requests || [];
+                    
+                    if (requests.length === 0) {
+                        activityList.innerHTML = `
+                            <li class="activity-item" style="justify-content: center; padding: 40px;">
+                                <div style="text-align: center; width: 100%;">
+                                    <i class="fas fa-box-open" style="font-size: 48px; color: #6c757d; margin-bottom: 15px;"></i>
+                                    <h4 style="color: #6c757d; font-size: 18px; margin-bottom: 8px;">No requests yet</h4>
+                                    <p style="color: #6c757d; font-size: 14px;">Click "Request Medicine" to submit your first request</p>
+                                </div>
+                            </li>
+                        `;
+                    } else {
+                        const displayRequests = requests.slice(0, 4);
+                        
+                        let html = '';
+                        displayRequests.forEach(request => {
+                            let icon = 'fa-hourglass-half';
+                            let badgeClass = 'badge-pending';
+                            let statusText = request.status || 'pending';
+                            
+                            if (request.status === 'approved') {
+                                icon = 'fa-check-circle';
+                                badgeClass = 'badge-approved';
+                            } else if (request.status === 'completed' || request.status === 'collected') {
+                                icon = 'fa-check-double';
+                                badgeClass = 'badge-collected';
+                            } else if (request.status === 'cancelled') {
+                                icon = 'fa-times-circle';
+                                badgeClass = 'badge-pending';
+                            }
+                            
+                            html += `
+                                <li class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas ${icon}"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>${request.medicine_name || 'Medicine Request'}</h4>
+                                        <p>Donor: ${request.donor_username || 'Pending'} · Qty: ${request.quantity}</p>
+                                        <span class="badge ${badgeClass}">${statusText.charAt(0).toUpperCase() + statusText.slice(1)}</span>
+                                    </div>
+                                    <div class="activity-time">${request.time_ago}</div>
+                                </li>
+                            `;
+                        });
+                        
+                        activityList.innerHTML = html;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                activityList.innerHTML = `
+                    <li class="activity-item" style="justify-content: center; padding: 40px;">
+                        <div style="text-align: center; width: 100%;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--danger); margin-bottom: 15px;"></i>
+                            <h4 style="color: var(--dark); margin-bottom: 8px;">Failed to load activity</h4>
+                            <p style="color: var(--gray);">Please refresh the page</p>
+                        </div>
+                    </li>
+                `;
+            } finally {
+                loadingEl.style.display = 'none';
+                activityList.style.display = 'block';
+            }
+        }
+
+        // ========== UI CONTROLLERS ==========
+        const requestBtn = document.getElementById('request-btn');
+        const sidebarRequestBtn = document.getElementById('sidebar-request-btn');
+        const requestOverlay = document.getElementById('request-overlay');
+        const closeFormBtn = document.getElementById('close-form');
+        const requestForm = document.getElementById('request-form');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        const uploadArea = document.getElementById('uploadArea');
+        const browseBtn = document.getElementById('browseBtn');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const previewImage = document.getElementById('previewImage');
+        const removeFile = document.getElementById('removeFile');
+
+        function openRequestForm(medicineName = '') {
+            requestOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            if (medicineName) {
+                document.getElementById('medicineName').value = medicineName;
+            }
+        }
+
+        function closeRequestForm() {
+            requestOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            requestForm.reset();
+            filePreview.classList.remove('active');
+            fileInput.value = '';
+        }
+
+        if (requestBtn) requestBtn.addEventListener('click', () => openRequestForm());
+        if (sidebarRequestBtn) sidebarRequestBtn.addEventListener('click', () => openRequestForm());
+
+        if (closeFormBtn) closeFormBtn.addEventListener('click', closeRequestForm);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeRequestForm);
+
+        if (requestOverlay) {
+            requestOverlay.addEventListener('click', function(e) {
+                if (e.target === requestOverlay) {
+                    closeRequestForm();
+                }
+            });
+        }
+
+        if (browseBtn) {
+            browseBtn.addEventListener('click', () => fileInput.click());
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size too large! Please select a file under 5MB.');
+                        return;
+                    }
+                    
+                    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Invalid file type! Please upload JPG, PNG, or PDF.');
+                        return;
+                    }
+                    
+                    if (file.type.match('image.*')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            filePreview.classList.add('active');
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        previewImage.src = 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
+                        filePreview.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function() {
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    fileInput.files = e.dataTransfer.files;
+                    const event = new Event('change', { bubbles: true });
+                    fileInput.dispatchEvent(event);
+                }
+            });
+        }
+
+        if (removeFile) {
+            removeFile.addEventListener('click', function() {
+                fileInput.value = '';
+                filePreview.classList.remove('active');
+            });
+        }
+
+        if (requestForm) {
+            requestForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const medicineName = document.getElementById('medicineName').value;
+                const dosage = document.getElementById('dosage').value;
+                const quantity = document.getElementById('quantity').value;
+                const urgency = document.getElementById('urgency').value;
+                const location = document.getElementById('location').value;
+                
+                if (!medicineName || !dosage || !quantity || !urgency || !location) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                const submitBtn = document.getElementById('submit-request-btn');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = 'Submitting...';
+                submitBtn.disabled = true;
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('medicine_name', medicineName);
+                    formData.append('dosage', dosage);
+                    formData.append('quantity', quantity);
+                    formData.append('urgency', urgency);
+                    formData.append('location', location);
+                    formData.append('condition', document.getElementById('condition').value);
+                    formData.append('notes', document.getElementById('additionalNotes').value);
+                    
+                    if (fileInput.files[0]) {
+                        formData.append('prescription', fileInput.files[0]);
+                    }
+                    
+                    const response = await fetch('/request_medicine', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('✅ Medicine request submitted successfully!\n\nYou will be notified when a donor matches your request.');
+                        closeRequestForm();
+                        loadReceiverStats();
+                        loadRecentRequests();
+                    } else {
+                        alert(result.message || 'Failed to submit request');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error submitting request. Please try again.');
+                } finally {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        // Escape key handler
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (requestOverlay?.classList.contains('active')) {
+                    closeRequestForm();
+                }
+                if (avatarContextMenu?.classList.contains('active')) {
+                    avatarContextMenu.classList.remove('active');
+                    contextMenuOverlay.classList.remove('active');
+                }
+                if (requestsModalOverlay?.classList.contains('active')) {
+                    closeRequestsModal();
+                }
+            }
+        });
+
+        // View all medicines link
+        const viewAllMedicines = document.getElementById('view-all-medicines');
+        if (viewAllMedicines) {
+            viewAllMedicines.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Full medicines page - Coming soon!');
+            });
+        }
+
+        // Pickup schedule link
+        const pickupScheduleLink = document.getElementById('pickup-schedule-link');
+        if (pickupScheduleLink) {
+            pickupScheduleLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Pickup Schedule - Coming soon!');
+            });
+        }
+
+        // Profile dropdown
+        window.toggleDropdown = function() {
+            const menu = document.getElementById('profileMenu');
+            if (menu) menu.classList.toggle('active');
+        };
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-icon')) {
+                const dropdowns = document.getElementsByClassName('dropdown-menu');
+                for (let d of dropdowns) {
+                    d.classList.remove('active');
+                }
+            }
+        };
+
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReceiverStats();
+            loadAvailableMedicines();
+            loadRecentRequests();
+
+            const usernameElements = document.querySelectorAll('#sidebar-username, #dropdown-username');
+            usernameElements.forEach(el => {
+                if (el) el.innerText = CURRENT_USER.username;
+            });
+
+            const roleElement = document.getElementById('sidebar-userrole');
+            if (roleElement) {
+                roleElement.innerText = 'Medicine Receiver';
+            }
+
+            // Log to confirm profile image routes are available
+            console.log('Receiver Dashboard initialized');
+            console.log('Profile image upload endpoint: /receiver/upload_profile');
+            console.log('Profile image delete endpoint: /receiver/delete_profile_image');
+            console.log('Current user:', CURRENT_USER);
+        });
+
+    })();
+</script>
+</body>
+</html>
