@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <style>
+  /* ... (keep all your existing CSS styles exactly as they are) ... */
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -667,9 +668,6 @@
   .btn-outline { border: 2px solid #fff; color: #fff; background: transparent; }
   .btn-outline:hover { background: #fff; color: var(--primary); transform: translateY(-2px); }
 
-  /* Medicines Section Styles ... REMAINS SAME */
-  /* (keeping your code exactly as requested) */
-
   #faq {
   margin-top: 10px;
   padding-top: 10px;
@@ -677,9 +675,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
-
 #faq h1 {
-  /* text-align:; */
   font-size: 32px;
   margin-bottom: 30px;
   color: #e65100;
@@ -718,7 +714,6 @@
   line-height: 1.6;
 }
 
-
   /* Footer */
   footer {
     background: #222;
@@ -728,142 +723,454 @@
     font-size: 15px;
   }
 
-  
+/* ===== DONATION FORM OVERLAY STYLES (copied from donor dashboard) ===== */
+.donation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
 
-  <!-- @media (max-width: 768px) {
-    .navbar { padding: 12px 20px; }
-    .menu { display: none; }
-    .hamburger { display: flex; }
-    section { padding: 120px 20px 20px; }
-    .hero-content h1 { font-size: 42px; }
-    .hero-content h3 { font-size: 22px; }
-    .medicines-grid {
-      grid-template-columns: 1fr;
-    }
-    .search-filter {
-      flex-direction: column;
-    }
-  } -->
+.donation-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
 
+.donation-form-container {
+    background: #fff;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 28px 28px 0 0;
+    padding: 35px;
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+}
+
+.donation-overlay.active .donation-form-container {
+    transform: translateY(0);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-header h3 {
+    font-size: 24px;
+    color: #343a40;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #6c757d;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #343a40;
+}
+
+.donation-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #343a40;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #ff7a00;
+    box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.image-upload-area {
+    border: 2px dashed #e9ecef;
+    border-radius: 20px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #fafafa;
+    transition: all 0.2s;
+}
+
+.image-upload-area:hover {
+    border-color: #ff7a00;
+    background-color: rgba(255,122,0,0.04);
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #6c757d;
+    margin-bottom: 12px;
+}
+
+.browse-btn {
+    display: inline-block;
+    padding: 8px 24px;
+    background-color: #ff7a00;
+    color: #fff;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 12px;
+}
+
+.image-preview {
+    display: none;
+    margin-top: 18px;
+    position: relative;
+}
+
+.image-preview.active {
+    display: block;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 32px;
+    height: 32px;
+    background: #dc3545;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    border: 2px solid #fff;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid #6c757d;
+    color: #6c757d;
+    border-radius: 40px;
+    padding: 10px 24px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-outline:hover {
+    background: #e9ecef;
+    border-color: #343a40;
+    color: #343a40;
+}
+
+#imageInput { display: none; }
+
+@media (max-width: 768px) {
+    .donation-form { grid-template-columns: 1fr; }
+    .donation-form-container { padding: 25px; }
+}
 
 /*   GLOBAL RESPONSIVE FIXES           */
-
 @media (max-width: 1100px) {
   section {
     padding: 100px 30px 30px;
   }
-
   .hero h1 {
     font-size: 46px;
   }
-
   .hero p {
     font-size: 16px;
   }
 }
 
-
-
 /*   TABLET RESPONSIVE (≤900px)        */
-
 @media (max-width: 900px) {
   .about-container {
     flex-direction: column;
     text-align: center;
   }
-
   .about-text h1 {
     font-size: 34px;
   }
-
   .hero h1 {
     font-size: 40px;
   }
-
   .medicine-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-
-
 /*   MOBILE RESPONSIVE (≤768px)        */
 @media (max-width: 768px) {
-
-  /* Navbar */
   .navbar {
     padding: 12px 20px;
   }
-
   .menu {
     display: none;
   }
-
   .hamburger {
     display: flex;
   }
-
-  /* Sections */
   section {
     padding: 110px 20px 40px;
   }
-
-  /* Hero text */
   .hero h1 {
     font-size: 34px;
     white-space: normal;
   }
-
   .hero p {
     font-size: 16px;
   }
-
   .hero-buttons {
     flex-direction: column;
     gap: 10px;
   }
-
   .btn-light,
   .btn-orange {
     width: 100%;
     text-align: center;
   }
-
-  /* Medicines */
   .medicines-grid {
     grid-template-columns: 1fr;
   }
-
-  /* Contact */
   .contact-item {
     flex-direction: column;
     text-align: center;
   }
-
   .contact-icon {
     margin-bottom: 12px;
   }
 }
 
-
-
 /*   SMALL MOBILE (≤480px)             */
-
 @media (max-width: 480px) {
   .hero h1 {
     font-size: 28px;
   }
-
   .hero p {
     font-size: 15px;
   }
-
   .about-text h1 {
     font-size: 28px;
   }
-
   .about-image img {
     max-width: 270px;
+  }
+}
+
+/* ===== SIDEBAR STYLES ===== */
+.sidebar {
+  position: fixed; 
+  top: 0; 
+  right: -280px;
+  width: 280px; 
+  height: 100%;
+  background: #ffffff; 
+  box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+  display: flex; 
+  flex-direction: column;
+  padding: 80px 20px 30px;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar.show { 
+  right: 0; 
+}
+
+.sidebar a {
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+  background: rgba(245, 124, 0, 0.1);
+  color: var(--primary);
+  transform: translateX(5px);
+}
+
+/* Sidebar Profile Section */
+.sidebar-profile {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.sidebar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.sidebar-profile-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+}
+
+.sidebar-username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.sidebar-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-menu-links .sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  color: #555;
+}
+
+.sidebar-menu-links .sidebar-link i {
+  font-size: 20px;
+  color: #6c757d;
+}
+
+.sidebar-menu-links .sidebar-link:hover i {
+  color: var(--primary);
+}
+
+.sidebar-menu-links .logout-link {
+  color: #dc3545;
+}
+
+.sidebar-menu-links .logout-link:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.sidebar-menu-links .logout-link:hover i {
+  color: #dc3545;
+}
+
+/* Sidebar Auth Buttons */
+.sidebar-auth {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.sidebar-login-btn {
+  background: var(--primary);
+  color: white !important;
+  text-align: center;
+  padding: 14px !important;
+  border-radius: 30px !important;
+  font-weight: 600;
+  margin-bottom: 0 !important;
+}
+
+.sidebar-login-btn:hover {
+  background: #e65100;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 10px rgba(245, 124, 0, 0.3);
+}
+
+.sidebar-register-btn {
+  background: transparent;
+  color: var(--primary) !important;
+  text-align: center;
+  padding: 14px !important;
+  border-radius: 30px !important;
+  font-weight: 600;
+  border: 2px solid var(--primary);
+}
+
+.sidebar-register-btn:hover {
+  background: var(--primary);
+  color: white !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Remove list styles */
+.sidebar li {
+  list-style: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+    right: -260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 240px;
+    right: -240px;
   }
 }
 </style>
@@ -884,23 +1191,18 @@
     <li><a href="#contact">Contact</a></li>
 
     {% if session.get('user') %}
-
-      <!-- LOGOUT BUTTON REMOVED (GOES INSIDE DROPDOWN) -->
-
-      <!-- ⭐ Profile Dropdown -->
+      <!-- Profile Dropdown -->
       <li class="profile-dropdown">
         <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
              alt="Profile"
              class="profile-icon">
-
         <div class="dropdown-menu">
           <p class="user-name">{{ session['user']['username'] }}</p>
-          <a href="/donor/dashboard">My Profile</a>
+          <a href="/{{ session.user.user_type }}/dashboard">My Profile</a>
           <a href="#">Settings</a>
           <a href="/logout" class="logout-btn">Logout</a>
         </div>
       </li>
-
     {% else %}
       <li>
         <a href="/login">
@@ -915,47 +1217,58 @@
   </div>
 </div>
 
-
-
+<!-- Sidebar -->
 <!-- Sidebar -->
 <div class="sidebar" id="sidebarMenu">
   <a href="#home" onclick="closeSidebar()">Home</a>
- <a href="#about" onclick="closeSidebar()">About</a>
-  <a href="#medicines" onclick="closeSidebar()">Available Medicines</a>
-  <a href="#contact" onclick="closeSidebar()">Contact</a>
-
-  <!-- Sidebar register kept (tell me if you want to remove it too) -->
-  <a href="login.html" class="sidebar-link">Login</a>
-
-</div>
-
-<!-- Sidebar
-<div class="sidebar" id="sidebarMenu">
-  <a href="#home" onclick="closeSidebar()">Home</a>
-  <a href="#medicines" onclick="closeSidebar()">Available Medicines</a>
   <a href="#about" onclick="closeSidebar()">About</a>
+  <a href="#medicines" onclick="closeSidebar()">Available Medicines</a>
   <a href="#contact" onclick="closeSidebar()">Contact</a>
-  <a href="login.html"><button class="login-btn">Login</button></a>
-  <a href="registration.html" style="margin: 10px 20px;"><button class="btn-nav" style="background: transparent; border: 2px solid var(--primary); color: var(--primary); width: 100%;">Register</button></a>
-</div> -->
+  
+  {% if session.get('user') %}
+    <!-- Profile section in sidebar -->
+    <div class="sidebar-profile">
+      <div class="sidebar-user-info">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+             alt="Profile"
+             class="sidebar-profile-icon">
+        <span class="sidebar-username">{{ session['user']['username'] }}</span>
+      </div>
+      <div class="sidebar-menu-links">
+        <a href="/{{ session.user.user_type }}/dashboard" class="sidebar-link">
+          <i class="material-icons">dashboard</i> My Profile
+        </a>
+        <a href="#" class="sidebar-link">
+          <i class="material-icons">settings</i> Settings
+        </a>
+        <a href="/logout" class="sidebar-link logout-link">
+          <i class="material-icons">logout</i> Logout
+        </a>
+      </div>
+    </div>
+  {% else %}
+    <div class="sidebar-auth">
+      <a href="/login" class="sidebar-login-btn">Login</a>
+      <a href="/registration" class="sidebar-register-btn">Register</a>
+    </div>
+  {% endif %}
+</div>
 
 <!-- Hero -->
 <section id="home" class="hero">
   <div class="overlay"></div>
-    
   <div class="hero-content">
-  <div class="slider-container">
-  <div class="slider-text">
-    💊 Paracetamol (50 strips) Available | 
-    🩺 Insulin Injection urgently needed in Pune region | 
-    💊 ORS Sachets (120 packets) Available for donation | 
-    🚨 Expiry Soon: Amoxicillin Capsules (10 strips left - expires in 15 days) |
-    ❤ Donate unused medicines to help patients in need |
-  </div>
-</div>
+    <div class="slider-container">
+      <div class="slider-text">
+        💊 Paracetamol (50 strips) Available | 
+        🩺 Insulin Injection urgently needed in Pune region | 
+        💊 ORS Sachets (120 packets) Available for donation | 
+        🚨 Expiry Soon: Amoxicillin Capsules (10 strips left - expires in 15 days) |
+        ❤ Donate unused medicines to help patients in need |
+      </div>
+    </div>
   
     <h1>Welcome to <span>AarogyaMitra</span></h1>
-
     <p>
       AarogyaMitra is a community-driven platform dedicated to ensuring that no medicine goes to waste and help reaches
       those who need it most. We bridge the gap between donors and beneficiaries by enabling safe, reliable medicine
@@ -964,7 +1277,8 @@
 
     <div class="hero-buttons">
       <a href="#medicines" class="btn btn-light">View Available Medicines</a>
-      <a href="donate.html" class="btn btn-orange">Donate Now →</a>
+      <!-- Donate Now button with popup form -->
+      <a href="#" id="donateNowBtn" class="btn btn-orange">Donate Now →</a>
     </div>
   </div>
 </section>
@@ -972,7 +1286,6 @@
 <!-- About -->
 <section id="about">
   <div class="about-container">
-      
     <div class="about-text">
       <h1>About</h1>
       <p>
@@ -988,15 +1301,11 @@
         strives to build a healthier, more supportive society—one donation at a time.
       </p>
     </div>
-
     <div class="about-image">
       <img src="/static/img/about.jpeg" alt="About AarogyaMitra">
     </div>
-
   </div>
 </section>
-
-
 
 <!-- Available Medicines Section -->
 <section id="medicines">
@@ -1068,7 +1377,6 @@
 <section id="faq">
   <div class="faq-container">
     <h1 class="faq-title">Frequently Asked Questions</h1>
-
     <div class="faq-item">
       <div class="faq-question">
         <h3>What is AarogyaMitra?</h3>
@@ -1077,7 +1385,6 @@
         <p>AarogyaMitra is a community-driven platform that connects medicine donors with individuals who need them.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <div class="faq-question">
         <h3>Is it safe to donate medicines?</h3>
@@ -1086,7 +1393,6 @@
         <p>Yes. Only sealed, unexpired, and properly stored medicines are accepted for donation.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <div class="faq-question">
         <h3>Is there any registration fee?</h3>
@@ -1095,7 +1401,6 @@
         <p>No. Our service is completely free for donors and receivers.</p>
       </div>
     </div>
-
     <div class="faq-item">
       <div class="faq-question">
         <h3>How do I request medicines?</h3>
@@ -1104,17 +1409,273 @@
         <p>You can request medicines by signing up and submitting a simple form on the Request Medicine page.</p>
       </div>
     </div>
-
   </div>
 </section>
 
 <footer>
   © 2025 AarogyaMitra — All Rights Reserved | Designed with ❤ for Community Healthcare
 </footer>
-<script>
-// Empty medicine data - No medicines available
-const medicines = [];
 
+<!-- ========== DONATION FORM OVERLAY (same as donor dashboard) ========== -->
+<div class="donation-overlay" id="donation-overlay">
+  <div class="donation-form-container">
+    <div class="form-header">
+      <h3>Donate Medicine</h3>
+      <button class="close-btn" id="close-form">&times;</button>
+    </div>
+    <form class="donation-form" id="donation-form" enctype="multipart/form-data">
+      <div class="form-group full-width">
+        <div class="image-upload-area" id="uploadArea">
+          <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <div class="upload-text">
+            <h4>Upload Medicine Image</h4>
+            <p>Drag & drop or click to upload</p>
+          </div>
+          <div class="browse-btn" id="browseBtn">Browse Files</div>
+          <input type="file" id="imageInput" name="image" accept="image/*">
+        </div>
+        <div class="image-preview" id="imagePreview">
+          <div class="preview-container" style="position:relative; display:inline-block;">
+            <img src="" alt="Preview" class="preview-image" id="previewImage">
+            <div class="remove-image" id="removeImage">&times;</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="medicineName">Medicine Name *</label>
+        <input type="text" id="medicineName" name="medicineName" class="form-control" placeholder="Enter medicine name" required>
+      </div>
+      <div class="form-group">
+        <label for="manufacturer">Manufacturer *</label>
+        <input type="text" id="manufacturer" name="manufacturer" class="form-control" placeholder="Manufacturer" required>
+      </div>
+      <div class="form-group">
+        <label for="expiryDate">Expiry Date *</label>
+        <input type="date" id="expiryDate" name="expiryDate" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="quantity">Quantity *</label>
+        <input type="number" id="quantity" name="quantity" class="form-control" placeholder="Number of units" required min="1">
+      </div>
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select id="category" name="category" class="form-control" required>
+          <option value="">Select</option>
+          <option value="tablets">Tablets</option>
+          <option value="syrup">Syrup</option>
+          <option value="ointment">Ointment</option>
+          <option value="injection">Injection</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="condition">Condition *</label>
+        <select id="condition" name="condition" class="form-control" required>
+          <option value="">Select condition</option>
+          <option value="sealed">Sealed/Unopened</option>
+          <option value="good">Good Condition</option>
+          <option value="fair">Fair Condition</option>
+        </select>
+      </div>
+      <div class="form-group full-width">
+        <label for="description">Additional Details</label>
+        <textarea id="description" name="description" class="form-control" placeholder="Any additional information..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submit-donation-btn">Submit Donation</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Font Awesome for icons (needed for donation form) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+// ========== DONATE NOW BUTTON WITH LOGIN CHECK AND POPUP ==========
+// Get the donate now button and overlay
+const donateNowBtn = document.getElementById('donateNowBtn');
+const donationOverlay = document.getElementById('donation-overlay');
+const closeFormBtn = document.getElementById('close-form');
+const cancelBtn = document.getElementById('cancel-btn');
+const donationForm = document.getElementById('donation-form');
+
+// Check if user is logged in (from Jinja2 template)
+const isUserLoggedIn = {% if session.get('user') %}true{% else %}false{% endif %};
+const userType = "{{ session.get('user', {}).get('user_type', '') }}";
+
+// Function to open donation form
+function openDonationForm() {
+    donationOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Set min date for expiry
+    const expiryInput = document.getElementById('expiryDate');
+    if (expiryInput) {
+        const today = new Date().toISOString().split('T')[0];
+        expiryInput.min = today;
+    }
+}
+
+// Function to close donation form
+function closeDonationForm() {
+    donationOverlay.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    if (donationForm) donationForm.reset();
+    if (imagePreview) imagePreview.classList.remove('active');
+    if (imageInput) imageInput.value = '';
+}
+
+// Add click event listener to donate now button
+if (donateNowBtn) {
+    donateNowBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (isUserLoggedIn) {
+            // User is logged in - check if user is donor
+            if (userType === 'donor') {
+                // Donor - open donation form popup
+                openDonationForm();
+            } else {
+                // Receiver or admin - redirect to their dashboard
+                window.location.href = "/" + userType + "/dashboard";
+            }
+        } else {
+            // User is not logged in - redirect to login page
+            window.location.href = "/login";
+        }
+    });
+}
+
+// Close form buttons
+if (closeFormBtn) closeFormBtn.addEventListener('click', closeDonationForm);
+if (cancelBtn) cancelBtn.addEventListener('click', closeDonationForm);
+
+// Close when clicking outside
+if (donationOverlay) {
+    donationOverlay.addEventListener('click', function(e) {
+        if (e.target === donationOverlay) {
+            closeDonationForm();
+        }
+    });
+}
+
+// Escape key handler
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && donationOverlay?.classList.contains('active')) {
+        closeDonationForm();
+    }
+});
+
+// ========== IMAGE UPLOAD HANDLING ==========
+const uploadArea = document.getElementById('uploadArea');
+const browseBtn = document.getElementById('browseBtn');
+const imageInput = document.getElementById('imageInput');
+const imagePreview = document.getElementById('imagePreview');
+const previewImage = document.getElementById('previewImage');
+const removeImage = document.getElementById('removeImage');
+
+if (browseBtn) {
+    browseBtn.addEventListener('click', () => imageInput.click());
+}
+
+if (imageInput) {
+    imageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large (max 5MB)');
+                return;
+            }
+            if (!file.type.match('image.*')) {
+                alert('Please select an image');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                imagePreview.classList.add('active');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+if (removeImage) {
+    removeImage.addEventListener('click', function() {
+        imageInput.value = '';
+        imagePreview.classList.remove('active');
+    });
+}
+
+if (uploadArea) {
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            imageInput.files = e.dataTransfer.files;
+            const file = e.dataTransfer.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large (max 5MB)');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                previewImage.src = ev.target.result;
+                imagePreview.classList.add('active');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// ========== FORM SUBMISSION ==========
+if (donationForm) {
+    donationForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submit-donation-btn');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'Submitting...';
+        submitBtn.disabled = true;
+
+        try {
+            const formData = new FormData(this);
+            const response = await fetch('/submit_donation', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Donation submitted successfully!');
+                closeDonationForm();
+            } else {
+                alert(result.message || 'Failed to submit donation');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error submitting donation. Please try again.');
+        } finally {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+// ========== SIDEBAR FUNCTIONS ==========
 function toggleSidebar(hamburger) {
   const sidebar = document.getElementById('sidebarMenu');
   sidebar.classList.toggle('show');
@@ -1128,30 +1689,28 @@ function closeSidebar() {
   hamburger.classList.remove('active');
 }
 
-// Function to check if a medicine is expiring soon (within 3 months)
+// ========== MEDICINE DATA ==========
+const medicines = [];
+
 function isExpiringSoon(expiryDate) {
   const today = new Date();
   const expiry = new Date(expiryDate);
   const threeMonthsFromNow = new Date();
   threeMonthsFromNow.setMonth(today.getMonth() + 3);
-  
   return expiry <= threeMonthsFromNow;
 }
 
-// Function to format date
 function formatDate(dateString) {
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
-// Function to get quantity status
 function getQuantityStatus(quantity) {
   if (quantity > 20) return { text: 'Available', class: 'available' };
   if (quantity > 5) return { text: 'Limited Stock', class: 'limited' };
   return { text: 'Low Stock', class: 'expiry-soon' };
 }
 
-// Function to render medicine cards
 function renderMedicines(medicinesToRender) {
   const medicinesGrid = document.getElementById('medicinesGrid');
   
@@ -1160,9 +1719,25 @@ function renderMedicines(medicinesToRender) {
       <div class="no-medicines">
         <p style="font-size: 20px; color: #666; margin-bottom: 15px;">No medicines available at the moment</p>
         <p style="color: #888; margin-bottom: 25px;">Be the first to donate medicines and help those in need.</p>
-        <a href="registration.html" class="btn btn-primary">Become a Donor</a>
+        <a href="#" id="becomeDonorBtn" class="btn btn-primary">Become a Donor</a>
       </div>
     `;
+    
+    const becomeDonorBtn = document.getElementById('becomeDonorBtn');
+    if (becomeDonorBtn) {
+      becomeDonorBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (isUserLoggedIn) {
+          if (userType === 'donor') {
+            openDonationForm();
+          } else {
+            window.location.href = "/" + userType + "/dashboard";
+          }
+        } else {
+          window.location.href = "/login";
+        }
+      });
+    }
     return;
   }
   
@@ -1198,27 +1773,20 @@ function renderMedicines(medicinesToRender) {
   }).join('');
 }
 
-// Function to filter medicines
 function filterMedicines() {
   const searchTerm = document.getElementById('searchMedicine').value.toLowerCase();
   const categoryFilter = document.getElementById('filterCategory').value;
   const expiryFilter = document.getElementById('filterExpiry').value;
   
   const filteredMedicines = medicines.filter(medicine => {
-    // Search filter
     const matchesSearch = medicine.name.toLowerCase().includes(searchTerm);
-    
-    // Category filter
     const matchesCategory = !categoryFilter || medicine.category === categoryFilter;
-    
-    // Expiry filter
     let matchesExpiry = true;
     if (expiryFilter === 'soon') {
       matchesExpiry = isExpiringSoon(medicine.expiryDate);
     } else if (expiryFilter === 'safe') {
       matchesExpiry = !isExpiringSoon(medicine.expiryDate);
     }
-    
     return matchesSearch && matchesCategory && matchesExpiry;
   });
   
@@ -1227,10 +1795,8 @@ function filterMedicines() {
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
-  // Render initial medicines (none available)
   renderMedicines(medicines);
   
-  // Add event listeners for filters
   document.getElementById('searchMedicine').addEventListener('input', filterMedicines);
   document.getElementById('filterCategory').addEventListener('change', filterMedicines);
   document.getElementById('filterExpiry').addEventListener('change', filterMedicines);
@@ -1262,7 +1828,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Add some interactive features
+  // Observer for animations
   const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -1277,7 +1843,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, observerOptions);
 
-  // Observe all sections
   document.querySelectorAll('section').forEach(section => {
     section.style.opacity = '0';
     section.style.transform = 'translateY(20px)';
@@ -1286,23 +1851,21 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// FAQ accordion
 const faqItems = document.querySelectorAll(".faq-item");
-
-  faqItems.forEach(item => {
-    item.addEventListener("click", () => {
-      item.classList.toggle("active");
-
-      const answer = item.querySelector(".faq-answer");
-
-      if (item.classList.contains("active")) {
-        answer.style.maxHeight = answer.scrollHeight + "px";
-      } else {
-        answer.style.maxHeight = null;
-      }
-    });
+faqItems.forEach(item => {
+  item.addEventListener("click", () => {
+    item.classList.toggle("active");
+    const answer = item.querySelector(".faq-answer");
+    if (item.classList.contains("active")) {
+      answer.style.maxHeight = answer.scrollHeight + "px";
+    } else {
+      answer.style.maxHeight = null;
+    }
   });
+});
 
-// Example of dynamically updating ticker text using JavaScript
+// Update ticker
 const tickerMessages = [
   "💊 Paracetamol (50 strips) Available",
   "🩺 Need Insulin Injection in Nagpur - Urgent",
@@ -1310,17 +1873,13 @@ const tickerMessages = [
   "🚨 Expiry Warning: Amoxicillin (15 days)",
   "❤ Donate unused medicines to help someone"
 ];
-
 document.querySelector('.slider-text').innerHTML = tickerMessages.join(" | ");
 
 async function loadMedicines() {
     const response = await fetch("/medicines");
     const data = await response.json();
-
     const container = document.querySelector(".medicines-grid");
-
     container.innerHTML = "";
-
     if (data.length === 0) {
       container.innerHTML = `
         <div class="no-medicines">
@@ -1328,39 +1887,33 @@ async function loadMedicines() {
         </div>`;
       return;
     }
-
     data.forEach(medicine => {
       container.innerHTML += `
         <div class="medicine-card">
           <div class="medicine-name">${medicine.name}</div>
-
           <div class="medicine-details">
             <div class="medicine-detail">
               <span class="detail-label">Expiry:</span>
               <span class="detail-value">${medicine.expiry}</span>
             </div>
-
             <div class="medicine-detail">
               <span class="detail-label">Quantity:</span>
               <span class="detail-value">${medicine.quantity}</span>
             </div>
-
             <div class="medicine-detail">
               <span class="detail-label">Status:</span>
               <span class="detail-value">${medicine.status}</span>
             </div>
           </div>
-
           <div class="donor-info">
             Donor: ${medicine.donor}
           </div>
         </div>
       `;
     });
-  }
+}
 
-  document.addEventListener("DOMContentLoaded", loadMedicines);
-
+document.addEventListener("DOMContentLoaded", loadMedicines);
 </script>
 
 </body>

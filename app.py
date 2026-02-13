@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key ="cmrds_secret_key_2026 "
+app.secret_key ="cmrds_secret_key_2026"
 
 UPLOAD_FOLDER = "static/medicine_images"
 # PROFILE_UPLOAD_FOLDER = "static/profile_images"
@@ -163,12 +163,13 @@ def login_user():
 
     # Check password
     if bcrypt.checkpw(password.encode("utf-8"), user["password"]):
-
         session["user"] = {
-            "username": user["username"],
-            "email": user["email"],
-            "user_type": user_type
-        }
+    "_id": str(user["_id"]),   # ⭐ IMPORTANT
+    "username": user["username"],
+    "email": user["email"],
+    "user_type": user_type,
+    "profile_image": user.get("profile_image")
+}
 
         return jsonify({
             "success": True,
@@ -184,9 +185,24 @@ def login_user():
 # ---------------------------------------------------------------------
 @app.route("/donor/dashboard")
 def donor_dashboard():
+
     if not session.get("user") or session["user"]["user_type"] != "donor":
         return redirect("/login")
-    return render_template("donor_dashboard.html", user=session["user"])
+
+    user_id = session["user"].get("_id")
+    
+    user = donor_collection.find_one({"_id": ObjectId(user_id)})
+    
+    # Convert ObjectId to string for JSON serialization
+    if user and "_id" in user:
+        user["_id"] = str(user["_id"])
+    
+    # IMPORTANT: Ensure profile_image is in the user object
+    if "profile_image" not in user:
+        user["profile_image"] = None
+    
+    return render_template("donor_dashboard.html", user=user)
+
 
 
 
@@ -450,12 +466,120 @@ def get_all_donations():
         "success": True,
         "donations": donations
     })
+    
+    
+PROFILE_FOLDER = "static/profile_images"
+os.makedirs(PROFILE_FOLDER, exist_ok=True)
 
-@app.route("/receiver/dashboard")
-def receiver_dashboard():
-    if not session.get("user") or session["user"]["user_type"] != "receiver":
-        return redirect("/login")
-    return render_template("receiver_dashboard.html", user=session["user"])
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route("/upload_profile", methods=["POST"])
+def upload_profile():
+
+    if "user" not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
+
+    file = request.files.get("profileImage")
+
+    if not file or file.filename == "":
+        return jsonify({"success": False, "message": "No file selected"}), 400
+
+    if not allowed_file(file.filename):
+        return jsonify({"success": False, "message": "Invalid image type. Allowed: png, jpg, jpeg, gif"}), 400
+
+    try:
+        # Get user_id from session
+        user_id = session["user"]["_id"]
+        
+        # Get old profile image to delete later
+        old_user = donor_collection.find_one({"_id": ObjectId(user_id)})
+        old_image = old_user.get("profile_image") if old_user else None
+        
+        # Generate unique filename
+        ext = file.filename.rsplit(".", 1)[1].lower()
+        unique_name = f"{user_id}_{uuid.uuid4().hex}.{ext}"
+
+        # Save new file
+        path = os.path.join(PROFILE_FOLDER, unique_name)
+        file.save(path)
+
+        # Update database with new image
+        donor_collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"profile_image": unique_name}}
+        )
+
+        # Delete old image file if it exists and is not the default
+        if old_image and old_image != "default.png":
+            old_path = os.path.join(PROFILE_FOLDER, old_image)
+            if os.path.exists(old_path):
+                try:
+                    os.remove(old_path)
+                    print(f"✅ Deleted old profile image: {old_image}")
+                except Exception as e:
+                    print(f"⚠ Could not delete old image: {e}")
+
+        # Update session with new profile image
+        session["user"]["profile_image"] = unique_name
+        session.modified = True
+
+        print(f"✅ Profile image uploaded successfully: {unique_name}")
+
+        return jsonify({
+            "success": True, 
+            "filename": unique_name,
+            "filepath": f"/static/profile_images/{unique_name}"
+        })
+        
+    except Exception as e:
+        print(f"❌ Error uploading profile image: {str(e)}")
+        return jsonify({"success": False, "message": "Server error during upload"}), 500
+
+
+# ========== NEW ROUTE TO DELETE PROFILE IMAGE ==========
+@app.route("/delete_profile_image", methods=["POST"])
+def delete_profile_image():
+    """Delete user's profile image and reset to default"""
+    
+    if "user" not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
+
+    try:
+        user_id = session["user"]["_id"]
+        
+        # Get current profile image filename
+        user = donor_collection.find_one({"_id": ObjectId(user_id)})
+        old_image = user.get("profile_image") if user else None
+        
+        # Delete the image file if it exists and is not default
+        if old_image and old_image != "default.png":
+            old_path = os.path.join(PROFILE_FOLDER, old_image)
+            if os.path.exists(old_path):
+                os.remove(old_path)
+                print(f"✅ Deleted profile image: {old_image}")
+        
+        # Update database - remove profile_image field
+        donor_collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$unset": {"profile_image": ""}}
+        )
+        
+        # Update session
+        session["user"]["profile_image"] = None
+        session.modified = True
+        
+        return jsonify({
+            "success": True,
+            "message": "Profile image deleted successfully",
+            "default_image": "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+        })
+        
+    except Exception as e:
+        print(f"❌ Error deleting profile image: {str(e)}")
+        return jsonify({"success": False, "message": "Server error during deletion"}), 500
 
 
 @app.route("/admin/dashboard")
