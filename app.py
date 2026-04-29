@@ -2021,6 +2021,132 @@ def generate_report():
     except Exception as e:
         print(f"❌ Error generating report: {str(e)}")
         return jsonify({"success": False, "message": "Server error"}), 500
+    
+    
+    
+# ------------------------------------------------------------
+# GET ALL DONATED MEDICINES + SEARCH MEDICINES
+# Add below your submit_donation route
+# ------------------------------------------------------------
+
+@app.route("/get_medicines")
+def get_medicines():
+
+    keyword = request.args.get("keyword", "").strip()
+
+    query = {"status": "available"}
+
+    if keyword:
+        query["$or"] = [
+            {"medicineName": {"$regex": keyword, "$options": "i"}},
+            {"manufacturer": {"$regex": keyword, "$options": "i"}},
+            {"category": {"$regex": keyword, "$options": "i"}}
+        ]
+
+    medicines = donated_medicine.find(query)
+
+    data = []
+
+    for med in medicines:
+        data.append({
+            "medicineName": med.get("medicineName"),
+            "manufacturer": med.get("manufacturer"),
+            "category": med.get("category"),
+            "quantity": med.get("quantity"),
+            "expiryDate": med.get("expiryDate"),
+            "image": med.get("image")
+        })
+
+    return jsonify(data)
+
+    keyword = request.args.get("keyword", "").strip()
+
+    query = {"status": "available"}
+
+    if keyword:
+        query["$or"] = [
+            {"medicineName": {"$regex": keyword, "$options": "i"}},
+            {"manufacturer": {"$regex": keyword, "$options": "i"}},
+            {"category": {"$regex": keyword, "$options": "i"}}
+        ]
+
+    medicines = donated_medicine.find(query)
+
+    data = []
+
+    for med in medicines:
+        data.append({
+            "medicineName": med.get("medicineName"),
+            "manufacturer": med.get("manufacturer"),
+            "category": med.get("category"),
+            "quantity": med.get("quantity"),
+            "expiryDate": med.get("expiryDate"),
+            "image": med.get("image")
+        })
+
+    return jsonify(data)
+
+    medicines = donated_medicine.find({"status": "available"})
+
+    data = []
+
+    for med in medicines:
+        data.append({
+            "medicineName": med.get("medicineName"),
+            "manufacturer": med.get("manufacturer"),
+            "category": med.get("category"),
+            "quantity": med.get("quantity"),
+            "expiryDate": med.get("expiryDate"),
+            "image": med.get("image")
+        })
+
+    return jsonify(data)
+
+    keyword = request.args.get("keyword", "").strip()
+    category = request.args.get("category", "").strip()
+    expiry = request.args.get("expiry", "").strip()
+
+    query = {
+        "status": "available"
+    }
+
+    # Search by medicine name / manufacturer
+    if keyword:
+        query["$or"] = [
+            {"medicineName": {"$regex": keyword, "$options": "i"}},
+            {"manufacturer": {"$regex": keyword, "$options": "i"}}
+        ]
+
+    # Filter by category
+    if category:
+        query["category"] = category
+
+    medicines = list(donated_medicine.find(query).sort("created_at", -1))
+
+    result = []
+
+    today = datetime.utcnow().date()
+
+    for med in medicines:
+
+        # Convert ObjectId
+        med["_id"] = str(med["_id"])
+
+        # Expiry Filter Logic
+        exp_date = datetime.strptime(med["expiryDate"], "%Y-%m-%d").date()
+        days_left = (exp_date - today).days
+
+        if expiry == "soon" and days_left > 30:
+            continue
+
+        if expiry == "safe" and days_left <= 30:
+            continue
+
+        med["daysLeft"] = days_left
+
+        result.append(med)
+
+    return jsonify(result)
 
 # ---------------------------------------------------------------------
 # LOGOUT

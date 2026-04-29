@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AarogyaMitra</title>
+<link rel="icon" type="image/png" href="/static/img/logo.png">
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -285,6 +286,7 @@
 #about {
   margin-top: 10px;
   padding-top: 10px;
+  min-height:auto;
 }
 
 #about h1 {
@@ -359,6 +361,7 @@
     background-color: #f8f9fa;
     margin-top: 10px;
   padding-top: 10px;
+  min-height:auto;
 
   }
   
@@ -489,6 +492,7 @@
   #contact{
     margin-top: 10px;
     padding-top: 10px;
+    min-height:auto;
   }
 
   #contact h1 {
@@ -629,16 +633,16 @@
     margin: 10px 20px; border-radius: 25px;
   }
 
-  section {
-    min-height: 100vh;
-    padding: 120px 50px 50px;
-  }
+ section {
+    padding: 70px 50px;
+}
 
   #home {
     background: url("/static/img/medicine.jpg") center/cover no-repeat;
     color: #fff; position: relative;
     display: flex; align-items: center; justify-content: center;
     text-align: left;
+    min-height: 100vh;
   }
 
   #home::before {
@@ -673,6 +677,7 @@
   padding-top: 10px;
   background: #f7f9fc;
   font-family: 'Poppins', sans-serif;
+  min-height:auto;
 }
 
 #faq h1 {
@@ -1173,17 +1178,30 @@
     right: -240px;
   }
 }
+
+
+.medicines-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.medicine-card{
+background:white;
+padding:15px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
 </style>
 </head>
 <body>
 
 <!-- Navbar -->
 <div class="navbar">
-  <div class="logo">
+  <div class="logo" id="logo">
     <img src="/static/img/logo.png" alt="AarogyaMitra Logo">
     <span class="logo-text">AarogyaMitra</span>
-  </div>
-
+</div>
   <ul class="menu">
     <li><a href="#home">Home</a></li>
     <li><a href="#about">About</a></li>
@@ -1317,19 +1335,7 @@
     
     <div class="search-filter">
       <input type="text" id="searchMedicine" class="search-box" placeholder="Search medicines by name...">
-      <select id="filterCategory" class="filter-select">
-        <option value="">All Categories</option>
-        <option value="Tablet">Tablets</option>
-        <option value="Capsule">Capsules</option>
-        <option value="Syrup">Syrups</option>
-        <option value="Injection">Injections</option>
-        <option value="Ointment">Ointments</option>
-      </select>
-      <select id="filterExpiry" class="filter-select">
-        <option value="">All Expiry Dates</option>
-        <option value="soon">Expiring Soon</option>
-        <option value="safe">Safe Expiry</option>
-      </select>
+      
     </div>
     
     <div class="medicines-grid" id="medicinesGrid">
@@ -1493,6 +1499,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script>
+document.getElementById("logo").addEventListener("click", function () {
+    location.reload();
+});
+
 // ========== DONATE NOW BUTTON WITH LOGIN CHECK AND POPUP ==========
 // Get the donate now button and overlay
 const donateNowBtn = document.getElementById('donateNowBtn');
@@ -1876,7 +1886,7 @@ const tickerMessages = [
 document.querySelector('.slider-text').innerHTML = tickerMessages.join(" | ");
 
 async function loadMedicines() {
-    const response = await fetch("/medicines");
+    const response = await fetch("/get_medicines");
     const data = await response.json();
     const container = document.querySelector(".medicines-grid");
     container.innerHTML = "";
@@ -1912,6 +1922,55 @@ async function loadMedicines() {
       `;
     });
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const medicinesGrid = document.getElementById("medicinesGrid");
+    const searchBox = document.getElementById("searchMedicine");
+
+    async function loadMedicines(keyword = "") {
+
+        let response = await fetch(`/get_medicines?keyword=${keyword}`);
+        let medicines = await response.json();
+
+        medicinesGrid.innerHTML = "";
+
+        if (medicines.length === 0) {
+            medicinesGrid.innerHTML = "<h3>No medicines found</h3>";
+            return;
+        }
+
+        medicines.forEach(med => {
+
+            medicinesGrid.innerHTML += `
+                <div class="medicine-card">
+                    <img src="/static/medicine_images/${med.image}" 
+                         style="width:100%;height:200px;object-fit:cover">
+
+                    <h3>${med.medicineName}</h3>
+                    <p>${med.manufacturer}</p>
+                    <p>${med.category}</p>
+                    <p>Qty: ${med.quantity}</p>
+                    <p>Expiry: ${med.expiryDate}</p>
+                </div>
+            `;
+        });
+    }
+
+    // First Load
+    loadMedicines();
+
+    // Live Search
+    searchBox.addEventListener("keyup", function () {
+        loadMedicines(this.value);
+    });
+
+});
+
+
+
+  
 
 document.addEventListener("DOMContentLoaded", loadMedicines);
 </script>
