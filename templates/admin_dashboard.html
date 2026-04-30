@@ -1484,6 +1484,94 @@
             display: none;
         }
 
+        /* Additional styles for accept/reject functionality */
+.action-buttons-request {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-accept {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-reject {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-accept:hover, .btn-reject:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.btn-accept:disabled, .btn-reject:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    animation: slideInRight 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.request-action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.status-badge.approved {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+}
+
+.status-badge.rejected {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+}
+
         /* Responsive */
         @media(max-width: 1200px) {
             .stats-cards {
@@ -2984,54 +3072,367 @@
             }
         }
 
-        // ========== LOAD DONATIONS ==========
-        async function loadDonations(filter = 'all') {
-            const donationsGrid = document.getElementById('donations-grid');
-            
-            try {
-                const response = await fetch('/get_all_donations_admin');
-                const data = await response.json();
+        // ========== LOAD MEDICINE REQUESTS WITH ACCEPT/REJECT BUTTONS ==========
+async function loadMedicineRequests(filter = 'all') {
+    const requestsGrid = document.getElementById('requests-grid');
+    const tbody = document.getElementById('requests-table-body');
+    
+    try {
+        const response = await fetch('/get_all_requests_admin');
+        const data = await response.json();
 
-                if (data.success) {
-                    let donations = data.donations || [];
-                    
-                    // Apply filter
-                    if (filter !== 'all') {
-                        donations = donations.filter(d => d.status === filter);
-                    }
-                    
-                    let html = '';
-                    donations.slice(0, 6).forEach(donation => {
-                        const initials = donation.donor_username ? donation.donor_username.substring(0, 2).toUpperCase() : 'D';
-                        html += `
-                            <div class="donation-card">
-                                <div class="donation-header">
-                                    <div class="donor-avatar">${initials}</div>
-                                    <div class="donor-info">
-                                        <h4>${donation.donor_username}</h4>
-                                        <p>Donor</p>
-                                    </div>
-                                    <span class="badge badge-available" style="margin-left: auto;">${donation.status}</span>
-                                </div>
-                                <h3 style="font-size: 18px; margin-bottom: 10px;">${donation.medicine_name}</h3>
-                                <p style="color: var(--gray); margin-bottom: 15px;">${donation.manufacturer || ''} · Exp: ${donation.expiry_date}</p>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                                    <span><i class="fas fa-box"></i> Qty: ${donation.quantity} units</span>
-                                    <span style="font-weight: 600; color: var(--purple);">${donation.time_ago}</span>
-                                </div>
-                                <button class="btn btn-primary" style="width: 100%;" onclick="viewDonationDetails('${donation.id}')">
+        if (data.success) {
+            let requests = data.requests || [];
+            
+            // Apply filter
+            if (filter !== 'all') {
+                requests = requests.filter(r => r.status === filter);
+            }
+            
+            // Update request cards with proper accept/reject buttons
+            let cardsHtml = '';
+            requests.slice(0, 6).forEach(request => {
+                const isPending = request.status === 'pending';
+                cardsHtml += `
+                    <div class="request-card" data-request-id="${request.id}">
+                        <div class="request-header">
+                            <span class="request-medicine">${request.medicine_name}</span>
+                            <span class="status-badge ${request.status}">${request.status.toUpperCase()}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="color: var(--gray);">${request.dosage || ''}</span>
+                            <span style="font-weight: 600; color: var(--purple);">Qty: ${request.quantity}</span>
+                        </div>
+                        <div class="request-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Requester:</span>
+                                <span class="detail-value">${request.receiver_username || 'Unknown'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value">${request.preferred_location || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Urgency:</span>
+                                <span class="detail-value" style="color: ${request.urgency === 'immediate' || request.urgency === 'urgent' ? 'var(--danger)' : request.urgency === 'normal' ? 'var(--warning)' : 'var(--success)'};">${request.urgency || 'normal'}</span>
+                            </div>
+                        </div>
+                        <div class="request-action-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
+                            ${isPending ? `
+                                <button class="btn-accept" style="flex: 1; padding: 10px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; background: linear-gradient(135deg, #28a745, #20c997); color: white;" onclick="acceptMedicineRequest('${request.id}')">
+                                    <i class="fas fa-check-circle"></i> Accept
+                                </button>
+                                <button class="btn-reject" style="flex: 1; padding: 10px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; background: linear-gradient(135deg, #dc3545, #c82333); color: white;" onclick="rejectMedicineRequest('${request.id}')">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" style="flex: 1; padding: 10px;" onclick="viewRequestDetails('${request.id}')">
                                     <i class="fas fa-eye"></i> View Details
                                 </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (requestsGrid) {
+                requestsGrid.innerHTML = cardsHtml || '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">No requests found</div>';
+            }
+            
+            // Update table with accept/reject buttons
+            let tableHtml = '';
+            requests.slice(0, 10).forEach(request => {
+                const isPending = request.status === 'pending';
+                tableHtml += `
+                    <tr data-request-id="${request.id}">
+                        <td><strong>${request.medicine_name}</strong><br><small style="color: var(--gray);">${request.dosage || ''}</small></td>
+                        <td>${request.receiver_username || 'Unknown'}</td>
+                        <td>${request.quantity} units</td>
+                        <td>${request.preferred_location || 'N/A'}</td>
+                        <td><span style="color: ${request.urgency === 'immediate' || request.urgency === 'urgent' ? 'var(--danger)' : request.urgency === 'normal' ? 'var(--warning)' : 'var(--success)'};">${request.urgency || 'normal'}</span></td>
+                        <td><span class="status-badge ${request.status}">${request.status}</span></td>
+                        <td>
+                            <div class="action-buttons" style="display: flex; gap: 8px;">
+                                <button class="icon-btn view" onclick="viewRequestDetails('${request.id}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${isPending ? `
+                                    <button class="icon-btn verify" style="background: linear-gradient(135deg, #28a745, #20c997);" onclick="acceptMedicineRequest('${request.id}')" title="Accept Request">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                    <button class="icon-btn suspend" style="background: linear-gradient(135deg, #dc3545, #c82333);" onclick="rejectMedicineRequest('${request.id}')" title="Reject Request">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
+                                ` : ''}
                             </div>
-                        `;
-                    });
-                    donationsGrid.innerHTML = html || '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">No donations found</div>';
-                }
-            } catch (error) {
-                console.error('Error loading donations:', error);
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            if (tbody) {
+                tbody.innerHTML = tableHtml || '<tr><td colspan="7" style="text-align: center; padding: 40px;">No requests found</td></tr>';
             }
         }
+    } catch (error) {
+        console.error('Error loading medicine requests:', error);
+        if (requestsGrid) requestsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--danger);">Error loading requests. Please try again.</div>';
+    }
+}
 
+
+// Add these functions to your existing <script> section in admin_dashboard.html
+
+// ========== ACCEPT MEDICINE REQUEST ==========
+window.acceptMedicineRequest = async function(requestId) {
+    if (!confirm('Are you sure you want to ACCEPT this medicine request?')) {
+        return;
+    }
+    
+    try {
+        // Show loading state on buttons
+        const buttons = document.querySelectorAll(`[onclick*="acceptMedicineRequest('${requestId}')"]`);
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        });
+        
+        // Use your existing route /update_request_status
+        const response = await fetch('/update_request_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ request_id: requestId, status: 'approved' })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToastMessage('✅ Request accepted successfully!', 'success');
+            // Refresh all data
+            const filterValue = document.getElementById('request-status-filter')?.value || 'all';
+            await loadMedicineRequests(filterValue);
+            await loadRequestsStats();
+            await loadAdminStats();
+        } else {
+            showToastMessage(result.message || 'Failed to accept request', 'error');
+            // Re-enable buttons
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Accept';
+            });
+        }
+    } catch (error) {
+        console.error('Error accepting request:', error);
+        showToastMessage('Network error. Please try again.', 'error');
+        const buttons = document.querySelectorAll(`[onclick*="acceptMedicineRequest('${requestId}')"]`);
+        buttons.forEach(btn => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Accept';
+        });
+    }
+};
+
+// ========== REJECT MEDICINE REQUEST ==========
+window.rejectMedicineRequest = async function(requestId) {
+    if (!confirm('Are you sure you want to REJECT this medicine request? This action cannot be undone.')) {
+        return;
+    }
+    
+    try {
+        // Show loading state on buttons
+        const buttons = document.querySelectorAll(`[onclick*="rejectMedicineRequest('${requestId}')"]`);
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        });
+        
+        // Use your existing route /update_request_status with status 'rejected'
+        const response = await fetch('/update_request_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ request_id: requestId, status: 'rejected' })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToastMessage('❌ Request rejected successfully', 'error');
+            // Refresh all data
+            const filterValue = document.getElementById('request-status-filter')?.value || 'all';
+            await loadMedicineRequests(filterValue);
+            await loadRequestsStats();
+            await loadAdminStats();
+        } else {
+            showToastMessage(result.message || 'Failed to reject request', 'error');
+            // Re-enable buttons
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-times-circle"></i> Reject';
+            });
+        }
+    } catch (error) {
+        console.error('Error rejecting request:', error);
+        showToastMessage('Network error. Please try again.', 'error');
+        const buttons = document.querySelectorAll(`[onclick*="rejectMedicineRequest('${requestId}')"]`);
+        buttons.forEach(btn => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-times-circle"></i> Reject';
+        });
+    }
+};
+
+// ========== SHOW TOAST NOTIFICATION ==========
+function showToastMessage(message, type = 'success') {
+    // Remove existing toast
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'times-circle'}"></i> ${message}`;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 12px 24px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        background: ${type === 'success' ? 'linear-gradient(135deg, #28a745, #20c997)' : 'linear-gradient(135deg, #dc3545, #c82333)'};
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ========== UPDATED loadMedicineRequests FUNCTION WITH ACCEPT/REJECT BUTTONS ==========
+async function loadMedicineRequests(filter = 'all') {
+    const requestsGrid = document.getElementById('requests-grid');
+    const tbody = document.getElementById('requests-table-body');
+    
+    try {
+        const response = await fetch('/get_all_requests_admin');
+        const data = await response.json();
+
+        if (data.success) {
+            let requests = data.requests || [];
+            
+            // Apply filter
+            if (filter !== 'all') {
+                requests = requests.filter(r => r.status === filter);
+            }
+            
+            // Update request cards with Accept/Reject buttons
+            let cardsHtml = '';
+            requests.slice(0, 6).forEach(request => {
+                const isPending = request.status === 'pending';
+                cardsHtml += `
+                    <div class="request-card" data-request-id="${request.id}">
+                        <div class="request-header">
+                            <span class="request-medicine">${request.medicine_name}</span>
+                            <span class="status-badge ${request.status}">${request.status.toUpperCase()}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="color: var(--gray);">${request.dosage || ''}</span>
+                            <span style="font-weight: 600; color: var(--purple);">Qty: ${request.quantity}</span>
+                        </div>
+                        <div class="request-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Requester:</span>
+                                <span class="detail-value">${request.receiver_username || 'Unknown'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value">${request.preferred_location || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Urgency:</span>
+                                <span class="detail-value" style="color: ${request.urgency === 'immediate' || request.urgency === 'urgent' ? 'var(--danger)' : request.urgency === 'normal' ? 'var(--warning)' : 'var(--success)'};">${request.urgency || 'normal'}</span>
+                            </div>
+                        </div>
+                        <div class="request-action-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
+                            ${isPending ? `
+                                <button class="btn-accept" style="flex: 1; padding: 10px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; background: linear-gradient(135deg, #28a745, #20c997); color: white;" onclick="acceptMedicineRequest('${request.id}')">
+                                    <i class="fas fa-check-circle"></i> Accept
+                                </button>
+                                <button class="btn-reject" style="flex: 1; padding: 10px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; background: linear-gradient(135deg, #dc3545, #c82333); color: white;" onclick="rejectMedicineRequest('${request.id}')">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" style="flex: 1; padding: 10px;" onclick="viewRequestDetails('${request.id}')">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (requestsGrid) {
+                requestsGrid.innerHTML = cardsHtml || '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">No requests found</div>';
+            }
+            
+            // Update table with Accept/Reject buttons
+            let tableHtml = '';
+            requests.slice(0, 10).forEach(request => {
+                const isPending = request.status === 'pending';
+                tableHtml += `
+                    <tr data-request-id="${request.id}">
+                        <td><strong>${request.medicine_name}</strong><br><small style="color: var(--gray);">${request.dosage || ''}</small></td>
+                        <td>${request.receiver_username || 'Unknown'}</td>
+                        <td>${request.quantity} units</td>
+                        <td>${request.preferred_location || 'N/A'}</td>
+                        <td><span style="color: ${request.urgency === 'immediate' || request.urgency === 'urgent' ? 'var(--danger)' : request.urgency === 'normal' ? 'var(--warning)' : 'var(--success)'};">${request.urgency || 'normal'}</span></td>
+                        <td><span class="status-badge ${request.status}">${request.status}</span></td>
+                        <td>
+                            <div class="action-buttons" style="display: flex; gap: 8px;">
+                                <button class="icon-btn view" onclick="viewRequestDetails('${request.id}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${isPending ? `
+                                    <button class="icon-btn verify" style="background: linear-gradient(135deg, #28a745, #20c997);" onclick="acceptMedicineRequest('${request.id}')" title="Accept Request">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                    <button class="icon-btn suspend" style="background: linear-gradient(135deg, #dc3545, #c82333);" onclick="rejectMedicineRequest('${request.id}')" title="Reject Request">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            if (tbody) {
+                tbody.innerHTML = tableHtml || '<tr><td colspan="7" style="text-align: center; padding: 40px;">No requests found</td></tr>';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading medicine requests:', error);
+        if (requestsGrid) requestsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--danger);">Error loading requests. Please refresh the page.</div>';
+    }
+}
+
+// Add the animation keyframes if not present
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+`;
+if (!document.querySelector('style[keyframes-added]')) {
+    styleSheet.setAttribute('keyframes-added', 'true');
+    document.head.appendChild(styleSheet);
+}
         // ========== USER MANAGEMENT ACTIONS ==========
         window.viewUserDetails = function(userId, userType) {
             alert(`Viewing details for user: ${userId}\nUser Type: ${userType}`);
